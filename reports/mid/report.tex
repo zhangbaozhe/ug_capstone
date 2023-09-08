@@ -19,9 +19,9 @@
 
 \begin{document}
 
-\title{Multi-Robot Path Planning in Dynamic Environments}
+\title{(TODO: narrowing down) Multi-Robot Path Planning in Dynamic Environments}
 
-\author{Baozhe Zhang (SSE, 119010421)
+\author{Baozhe Zhang
         % <-this % stops a space
 \thanks{TODO}% <-this % stops a space
 \thanks{TODO}}
@@ -49,11 +49,15 @@ TODO
 \IEEEPARstart{T}{odo}
 
 \section{Related Work}
-TODO \cite{Falanga_pampc}
 
 In general, path-planning algorithms for robot navigation can be divided into two major categories: global and local methods.
 Global methods focus on finding collision-free paths from the current robot position to a global goal position mostly in static scenes, while local methods tend to reactively avoid both static and dynamic obstacles. 
 Path-planning algorithms for multi-robot systems \dots (TODO: cooperative, distributed, heterogeneous)
+
+Traditional global methods such as rapidly exploring random tree (RRT), probabilistic roadmap (PRM), and their variants use sampling in the configuration space to crate collision-free pathss \cite{lavalle2001rapidly}, \cite{karaman2011sampling}, \cite{kavraki1996probabilistic}. 
+However, these methods need to search the whole space which may suffer from heavy computational loads especially when the searching space is large.  
+Optimization-based method such as model predictive control added with obstacle constraints or with additional environment-related terms \cite{park2009obstacle}, \cite{ji2016path}  can be used to generate collision-free paths. 
+However, MPC-related methods need to tradeoff among the length of the time horizon, the computational loads, and optimality. Short time horizon often leads the problem to local optimized solution.
 
 \bibliographystyle{IEEEtran}
 \bibliography{report}
