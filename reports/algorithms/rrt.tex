@@ -1,0 +1,21 @@
+\begin{algorithm}
+\SetAlgoLined
+\KwIn{Start state $q_{start}$, goal region $G$, maximum number of iterations $K$, step size $\Delta q$, collision checking function $IsCollisionFree$, tree $T$}
+\KwOut{A path from $q_{start}$ to $G$ if found, otherwise failure}
+Add $q_{start}$ to $T$\;
+\For{$k=1$ \KwTo $K$}{
+  $q_{rand} \gets$ RandomState()\;
+  $q_{near} \gets$ NearestVertex($T$, $q_{rand}$)\;
+  $q_{new} \gets$ Steer($q_{near}$, $q_{rand}$, $\Delta q$)\;
+  \If{!IsCollisionFree($q_{near}$, $q_{new}$)}{
+    continue\;
+  }
+  Add $q_{new}$ to $T$\;
+  \If{$q_{new} \in G$}{
+    \Return Path($q_{start}$, $q_{new}$)\;
+  }
+}
+\Return failure\;
+\caption{Rapidly-Exploring Random Tree (RRT)}
+\label{alg:rrt}
+\end{algorithm}

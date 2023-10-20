@@ -1,0 +1,30 @@
+\begin{algorithm}
+\caption{A* Algorithm}
+\label{alg:a_star}
+\begin{algorithmic}[1]
+\REQUIRE $start$: starting node, $goal$: goal node
+\STATE $openSet \gets \{start\}$
+\STATE $cameFrom \gets$ empty map
+\STATE $gScore[start] \gets 0$
+\STATE $fScore[start] \gets heuristic(start, goal)$
+\WHILE{$openSet$ is not empty}
+  \STATE $current \gets$ node in $openSet$ with lowest $fScore$
+  \IF{$current = goal$}
+    \RETURN reconstructPath($cameFrom$, $current$)
+  \ENDIF
+  \STATE remove $current$ from $openSet$
+  \FORALL{$neighbor$ of $current$}
+    \STATE $tentativeGScore \gets gScore[current] + dist(current, neighbor)$
+    \IF{$neighbor$ not in $gScore$ or $tentativeGScore < gScore[neighbor]$}
+      \STATE $cameFrom[neighbor] \gets current$
+      \STATE $gScore[neighbor] \gets tentativeGScore$
+      \STATE $fScore[neighbor] \gets gScore[neighbor] + heuristic(neighbor, goal)$
+      \IF{$neighbor$ not in $openSet$}
+        \STATE add $neighbor$ to $openSet$
+      \ENDIF
+    \ENDIF
+  \ENDFOR
+\ENDWHILE
+\RETURN failure
+\end{algorithmic}
+\end{algorithm}

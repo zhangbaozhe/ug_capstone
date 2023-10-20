@@ -1,0 +1,23 @@
+\begin{algorithm}
+\SetAlgoLined
+\KwIn{Graph $G=(V,E)$, source node $s$}
+\KwOut{Shortest path distances $d[v]$ for all $v \in V$}
+\For{each vertex $v \in V$}{
+  $d[v] \leftarrow \infty$\;
+}
+$d[s] \leftarrow 0$\;
+$S \leftarrow \emptyset$\;
+$Q \leftarrow V$\;
+\While{$Q \neq \emptyset$}{
+  $u \leftarrow$ vertex in $Q$ with minimum $d[u]$\;
+  remove $u$ from $Q$\;
+  add $u$ to $S$\;
+  \For{each neighbor $v$ of $u$}{
+    \If{$d[u] + w(u,v) < d[v]$}{
+      $d[v] \leftarrow d[u] + w(u,v)$\;
+    }
+  }
+}
+\caption{TODO: Dijkstra's Algorithm}
+\label{alg:dijkstra}
+\end{algorithm}
