@@ -93,7 +93,6 @@ By utilizing certain (deep) RL training methods, the trained models (e.g., neura
 
 \subsection{Traditional Planning and Control Methods}
 
-%% Path planning
 
 \input{../figures/planning_concept.tex}
 In general, path-planning algorithms for robot navigation can be divided into two major categories: global and local methods.  
@@ -102,21 +101,27 @@ In order to generate smooth trajectories for robots to follow, based on the disc
 The path-finding module is called the frontend and the optimization module is called the backend. 
 A typical traditional path-planning pipeline can be found in Fig.~\ref{fig:concept}.
 
+\subsubsection{Path finding}
+
 % \input{../algorithms/a_star.tex}
 Global search-based algorithms such as depth-first search (DFS), breadth-first search (BFS), Dijkstra \cite{wang2011application}, and A* \cite{hart1968formal}, use path-search methods with (or without) certain pre-defined heuristics to find geometrically feasible paths on given grid maps. 
 A key assumption for these methods to perform path-finding is the map is given, which can be difficult to be obtained in certain situations. 
 Though these search-based methods can perform well, they can have longer search time when the space scales.
 % Alg.~\ref{alg:a_star} shows the A* path-planning algorithm which returns the shortest path from the source node to the target node. 
 Sample-based methods such as rapidly exploring random tree (RRT), probabilistic roadmap (PRM), and their variants use sampling in the configuration space (C-Space) to crate collision-free paths \cite{lavalle2001rapidly,karaman2011sampling,kavraki1996probabilistic}. 
-% The general form of RRT and PRM algorithms can be found in Alg.~\ref{alg:rrt} and Alg.~\ref{alg:prm}, respectively.
-% \input{../algorithms/rrt.tex}
-% \input{../algorithms/prm.tex}
+The general form of RRT algorithm can be found in Alg.~\ref{alg:rrt}.
+\input{../algorithms/rrt.tex}
 However, the tree nodes in these methods need to cover the whole C-Space which may suffer from heavy computational loads especially when the space is large.  
 Optimization-based method such as model predictive control (MPC) added with obstacle constraints or with additional environment-related terms \cite{park2009obstacle}, \cite{ji2016path}  can be used to generate collision-free paths. 
 However, MPC-related methods need to tradeoff among the length of the time horizon, the computational loads, and optimality. Short time horizon often leads the problem to sub-optimal solutions.
+
 Both search- and sample-based methods can generate geometrically collision-free paths but possibly having great jerks (i.e., the time derivatives of the accelerations) or violating the underlying robots' dynamics.
 For example, most ground vehicles are not holonomic, i.e., they cannot move freely in all directions in 2D space, where their motions are governed by their mechanical and motional constraints.
 
+\subsubsection{Trajectory generation/optimization}
+To generate both smooth and kinodynamic feasible trajectories, trajectory optimization is included to solve the problem.
+
+\subsubsection{Local methods}
 Most global methods perform well in static environments, but poorly in dynamic environments. 
 Local path-planning methods can be employed to handle this problem. 
 An early local obstacle-avoidance method is artificial potential field (APF) \cite{warren1989global}.
@@ -139,12 +144,8 @@ where $R_{\text{out}}$ is the distance outside the obstacle.
 APF can be used for quadrotor path-planning \cite{chen2016uav}.
 However, when multiple obstacles presented, APF can suffer from the problem of local minimum \cite{koren1991potential}.
 
-%% Motion planning
-
-%% trajectory generation
-
-While path-planning algorithms can generate collision-free 2D or 3D paths or waypoints for robots, they assume a holonomic point-mass model which may result in dynamic unfeasible paths for certain non-holonomic robots, e.g., cars. 
-Motion planning algorithms are considered deeply coupled with robots' kinodynamic models to generate high-dimension feasible motions (e.g., accelerations, jerks, and angular velocities). 
+\subsubsection{Control}
+Control.
 
 \subsection{RL-based Planning and Control Methods}
 
