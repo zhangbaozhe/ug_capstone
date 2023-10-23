@@ -82,13 +82,16 @@ TODO
 In this section, we will investigate both traditional and RL-based methods for planning and control in the literature, with more focus on the aerial systems such as drones or quadrotors.
 Traditional planning and control frameworks are decoupled.
 % Path planning module serves as a frontend to find a geometric collision-free path in the given map, and motion planning module, based on the found path, finds the suitable dynamic-feasible motions for the robots. 
-The path-(motion-)planning module serves as a guide system for the low-level controller to drive the robot to move. 
+The path-(motion-)planning module serves as a guide system for the low-level controller driving the robot to move. 
 This module needs to generate a geometrically collision-free and possibly kinodynamic feasible trajectory (or motion setpoints) for the low-level controller.
 Then the low-level control module can use these motion setpoints to control the actuators on the robots to move.
 Recent RL-based methods try to combine these two modules into a coupled system from repeated learning. 
 The robots learn to navigate itself by trials and learning from the environments.
 These trials are mostly conducted in simulations, where high-fidelity physics engines are required. 
 By utilizing certain (deep) RL training methods, the trained models (e.g., neural networks) can be deployed on real robots for autonomous navigation in various static or dynamic environments.
+
+\subsection{Map Representation and Configuration Space}
+TODO
 
 
 \subsection{Traditional Planning and Control Methods}
@@ -102,6 +105,7 @@ The path-finding module is called the frontend and the optimization module is ca
 A typical traditional path-planning pipeline can be found in Fig.~\ref{fig:concept}.
 
 \subsubsection{Path finding}
+
 
 % \input{../algorithms/a_star.tex}
 Global search-based algorithms such as depth-first search (DFS), breadth-first search (BFS), Dijkstra \cite{wang2011application}, and A* \cite{hart1968formal}, use path-search methods with (or without) certain pre-defined heuristics to find geometrically feasible paths on given grid maps. 

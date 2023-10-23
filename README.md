@@ -9,3 +9,6 @@ This is the MR course ERG4901 for SSE senior students at CUHK-Shenzhen.
 
 ## Specific topics
 
+## Mid 
+Due: Oct 31
+
