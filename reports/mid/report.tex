@@ -18,6 +18,7 @@
 \usepackage{hyperref}
 \usepackage{setspace}
 
+% usepackage from 
 \usepackage{adjustbox}
 \usepackage{physics}
 \usepackage{amsmath}
@@ -79,16 +80,29 @@ TODO
 
 \section{Related Work}
 
-In this section, we will investigate both traditional and RL-based methods for planning and control in the literature, with more focus on the aerial systems such as drones or quadrotors.
+In this section, we will investigate both traditional 
+and RL-based methods for planning and control in the 
+literature, with more focus on the aerial systems 
+such as drones or quadrotors.
 Traditional planning and control frameworks are decoupled.
 % Path planning module serves as a frontend to find a geometric collision-free path in the given map, and motion planning module, based on the found path, finds the suitable dynamic-feasible motions for the robots. 
-The path-(motion-)planning module serves as a guide system for the low-level controller driving the robot to move. 
-This module needs to generate a geometrically collision-free and possibly kinodynamic feasible trajectory (or motion setpoints) for the low-level controller.
-Then the low-level control module can use these motion setpoints to control the actuators on the robots to move.
-Recent RL-based methods try to combine these two modules into a coupled system from repeated learning. 
-The robots learn to navigate itself by trials and learning from the environments.
-These trials are mostly conducted in simulations, where high-fidelity physics engines are required. 
-By utilizing certain (deep) RL training methods, the trained models (e.g., neural networks) can be deployed on real robots for autonomous navigation in various static or dynamic environments.
+The path-(motion-)planning module serves as a guide system 
+for the low-level controller driving the robot to move. 
+This module needs to generate a geometrically 
+collision-free and possibly kinodynamic feasible trajectory 
+(or motion setpoints) for the low-level controller.
+Then the low-level control module can use these motion 
+setpoints to control the actuators on the robots to move.
+Recent RL-based methods try to combine these two modules 
+into a coupled system from repeated learning. 
+The robots learn to navigate itself by trials and learning 
+from the environments.
+These trials are mostly conducted in simulations, 
+where high-fidelity physics engines are required. 
+By utilizing certain (deep) RL training methods, 
+the trained models (e.g., neural networks) can be deployed 
+on real robots for autonomous navigation in various static 
+or dynamic environments.
 
 \subsection{Map Representation and Configuration Space}
 TODO
@@ -98,46 +112,98 @@ TODO
 
 
 \input{../figures/planning_concept.tex}
-In general, path-planning algorithms for robot navigation can be divided into two major categories: global and local methods.  
-Global methods focus on finding collision-free paths from the current robot position to a global goal position mostly in static scenes, while local methods tend to reactively avoid both static and dynamic obstacles. 
-In order to generate smooth trajectories for robots to follow, based on the discrete planned waypoints, the trajectory optimization module is usually added in the whole pipeline. 
-The path-finding module is called the frontend and the optimization module is called the backend. 
-A typical traditional path-planning pipeline can be found in Fig.~\ref{fig:concept}.
+In general, path-planning algorithms for robot navigation 
+can be divided into two major categories: 
+global and local methods.  
+Global methods focus on finding collision-free paths from 
+the current robot position to a global goal position mostly 
+in static scenes, while local methods tend to reactively 
+avoid both static and dynamic obstacles. 
+In order to generate smooth trajectories for robots to 
+follow, based on the discrete planned waypoints, the 
+trajectory optimization module is usually added in the 
+whole pipeline. 
+The path-finding module is called the frontend and the 
+optimization module is called the backend. 
+A typical traditional path-planning pipeline can be 
+found in Fig.~\ref{fig:concept}.
 
 \subsubsection{Path finding}
 
 
 % \input{../algorithms/a_star.tex}
-Global search-based algorithms such as depth-first search (DFS), breadth-first search (BFS), Dijkstra \cite{wang2011application}, and A* \cite{hart1968formal}, use path-search methods with (or without) certain pre-defined heuristics to find geometrically feasible paths on given grid maps. 
-A key assumption for these methods to perform path-finding is the map is given, which can be difficult to be obtained in certain situations. 
-Though these search-based methods can perform well, they can have longer search time when the space scales.
+Global search-based algorithms such as depth-first 
+search (DFS), breadth-first search (BFS), 
+Dijkstra \cite{wang2011application}, and 
+A* \cite{hart1968formal}, use path-search methods 
+with (or without) certain pre-defined heuristics to find 
+geometrically feasible paths on given grid maps. 
+A key assumption for these methods to perform path-finding 
+is the map is given, which can be difficult to be obtained 
+in certain situations. 
+Though these search-based methods can perform well, they 
+can have longer search time when the space scales.
 % Alg.~\ref{alg:a_star} shows the A* path-planning algorithm which returns the shortest path from the source node to the target node. 
-Sample-based methods such as rapidly exploring random tree (RRT), probabilistic roadmap (PRM), and their variants use sampling in the configuration space (C-Space) to crate collision-free paths \cite{lavalle2001rapidly,karaman2011sampling,kavraki1996probabilistic}. 
-The general form of RRT algorithm can be found in Alg.~\ref{alg:rrt}.
+Sample-based methods such as rapidly exploring random 
+tree (RRT), probabilistic roadmap (PRM), and their 
+variants use sampling in the configuration space (C-Space) 
+to crate collision-free paths \cite{lavalle2001rapidly,
+karaman2011sampling,kavraki1996probabilistic}. 
+The general form of RRT algorithm can be found in 
+Alg.~\ref{alg:rrt}.
 \input{../algorithms/rrt.tex}
-However, the tree nodes in these methods need to cover the whole C-Space which may suffer from heavy computational loads especially when the space is large.  
-Optimization-based method such as model predictive control (MPC) added with obstacle constraints or with additional environment-related terms \cite{park2009obstacle}, \cite{ji2016path}  can be used to generate collision-free paths. 
-However, MPC-related methods need to tradeoff among the length of the time horizon, the computational loads, and optimality. Short time horizon often leads the problem to sub-optimal solutions.
+However, the tree nodes in these methods need to cover the 
+whole C-Space which may suffer from heavy computational 
+loads especially when the space is large.  
+Optimization-based method such as model predictive 
+control (MPC) added with obstacle constraints or with 
+additional environment-related 
+terms \cite{park2009obstacle}, \cite{ji2016path}  can be 
+used to generate collision-free paths. 
+However, MPC-related methods need to tradeoff among the 
+length of the time horizon, the computational loads, and 
+optimality. Short time horizon often leads the problem to 
+sub-optimal solutions.
 
-Both search- and sample-based methods can generate geometrically collision-free paths but possibly having great jerks (i.e., the time derivatives of the accelerations) or violating the underlying robots' dynamics.
-For example, most ground vehicles are not holonomic, i.e., they cannot move freely in all directions in 2D space, where their motions are governed by their mechanical and motional constraints.
+Both search- and sample-based methods can generate 
+geometrically collision-free paths but possibly having 
+great jerks (i.e., the time derivatives of 
+the accelerations) or violating the underlying 
+robots' dynamics.
+For example, most ground vehicles are not 
+holonomic, i.e., they cannot move freely in all directions 
+in 2D space, where their motions are governed by their 
+mechanical and motional constraints.
 
 \subsubsection{Trajectory generation/optimization}
-To generate both smooth and kinodynamic feasible trajectories, trajectory optimization is included to solve the problem.
+To generate both smooth and kinodynamic feasible 
+trajectories, trajectory optimization is included to 
+solve the problem.
 
 \subsubsection{Local methods}
-Most global methods perform well in static environments, but poorly in dynamic environments. 
-Local path-planning methods can be employed to handle this problem. 
-An early local obstacle-avoidance method is artificial potential field (APF) \cite{warren1989global}.
-APF formulates the potentials on a given path as the inside and outside ones, and pushes the path from high-potential to low-potential region by finding the lowest potential value. 
-If the waypoints on the path across the obstacle (in the obstacle), the potential is formulated as 
+Most global methods perform well in static environments, 
+but poorly in dynamic environments. 
+Local path-planning methods can be employed to handle 
+this problem. 
+An early local obstacle-avoidance method is artificial 
+potential field (APF) \cite{warren1989global}.
+APF formulates the potentials on a given path as the 
+inside and outside ones, and pushes the path from 
+high-potential to low-potential region by finding the 
+lowest potential value. 
+If the waypoints on the path across the 
+obstacle (in the obstacle), the potential is formulated as 
 \begin{equation}
 \label{eq:APF_in}
 U_{\text{in}} = 
 U_{\text{max}}(1 - \frac{R_{\text{in}}}{R_{\text{max}}}) + 
 U_{\text{offset}}
 \end{equation}
-where $U_{\text{max}}$ is the max potential, $R_{\text{in}}$ is the distance to the centroid of the obstacle, $R_{\text{max}}$ is the max radius of the obstacle, and $U_{\text{offset}}$ is the extra potential penalty.
+where $U_{\text{max}}$ is the max potential, 
+$R_{\text{in}}$ is the distance to the centroid of the 
+obstacle, $R_{\text{max}}$ is the max radius of the 
+obstacle, and $U_{\text{offset}}$ is the extra 
+potential penalty.
 The outside potential is formulated as 
 \begin{equation}
 \label{eq:APF_out}
@@ -146,7 +212,8 @@ U_{\text{out}} =
 \end{equation}
 where $R_{\text{out}}$ is the distance outside the obstacle.
 APF can be used for quadrotor path-planning \cite{chen2016uav}.
-However, when multiple obstacles presented, APF can suffer from the problem of local minimum \cite{koren1991potential}.
+However, when multiple obstacles presented, APF can suffer 
+from the problem of local minimum \cite{koren1991potential}.
 
 \subsubsection{Control}
 Control.
