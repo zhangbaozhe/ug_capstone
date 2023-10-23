@@ -40,6 +40,10 @@
 \usetikzlibrary{shadows.blur}
 \usetikzlibrary{shapes}
 
+\newcommand{\B}[1]{\boldsymbol{#1}}
+\newcommand{\TB}[1]{\textbf{#1}}
+\newcommand{\etal}{\textit{et al.}}
+
 \begin{document}
 
 \title{Multi-drone Motion Planning \& Control in Dynamic Environment based on Deep Reinforcement Learning}
@@ -76,7 +80,14 @@ TODO
 \end{IEEEkeywords}
 
 \section{Introduction}
-\IEEEPARstart{T}{odo}
+\IEEEPARstart{R}{ecently}, micro aerial vehicles (MAVs) or 
+drones have been widely used in cinematography, search and 
+rescue, inspection, and other tasks that require 
+high-mobility or are difficult and unsafe for humans to 
+operate. 
+The planning and control system for plays a great role for 
+unmanned aerial vehicles (UAVs) to perform the 
+above mentioned tasks autonomously.
 
 \section{Related Work}
 
@@ -105,7 +116,12 @@ on real robots for autonomous navigation in various static
 or dynamic environments.
 
 \subsection{Map Representation and Configuration Space}
-TODO
+TODO: Occupancy, grid, ESDF, TSDF, topological
+
+kd-tree, octo, 
+
+
+
 
 
 \subsection{Traditional Planning and Control Methods}
@@ -123,16 +139,22 @@ In order to generate smooth trajectories for robots to
 follow, based on the discrete planned waypoints, the 
 trajectory optimization module is usually added in the 
 whole pipeline. 
-The path-finding module is called the frontend and the 
-optimization module is called the backend. 
-A typical traditional path-planning pipeline can be 
+Usually in the literature, the path-finding module 
+is called the frontend and the 
+trajectory-optimization module is called the backend. 
+A typical traditional planning pipeline can be 
 found in Fig.~\ref{fig:concept}.
 
-\subsubsection{Path finding}
+\subsubsection{Path finding (frontend)}
+
+In the path-finding stage of the global planning, 
+the methods can be categorized 
+from three major directions: \TB{search-based}, 
+\TB{sample-based}, and \TB{kinodynamic} methods. 
 
 
 % \input{../algorithms/a_star.tex}
-Global search-based algorithms such as depth-first 
+\TB{Search-based} algorithms such as depth-first 
 search (DFS), breadth-first search (BFS), 
 Dijkstra \cite{wang2011application}, and 
 A* \cite{hart1968formal}, use path-search methods 
@@ -144,7 +166,7 @@ in certain situations.
 Though these search-based methods can perform well, they 
 can have longer search time when the space scales.
 % Alg.~\ref{alg:a_star} shows the A* path-planning algorithm which returns the shortest path from the source node to the target node. 
-Sample-based methods such as rapidly exploring random 
+\TB{Sample-based} methods such as rapidly exploring random 
 tree (RRT), probabilistic roadmap (PRM), and their 
 variants use sampling in the configuration space (C-Space) 
 to crate collision-free paths \cite{lavalle2001rapidly,
@@ -155,27 +177,41 @@ Alg.~\ref{alg:rrt}.
 However, the tree nodes in these methods need to cover the 
 whole C-Space which may suffer from heavy computational 
 loads especially when the space is large.  
-Optimization-based method such as model predictive 
+
+Both search- and sample-based methods can generate 
+geometrically collision-free paths but possibly jerky or 
+violating the underlying robots' dynamics.
+For example, most ground vehicles are not 
+holonomic, i.e., they cannot move freely in all directions 
+in 2D space, where their motions are governed by their 
+mechanical and motion constraints (e.g., velocities and 
+accelerations).
+In order to obey both the kinematic and dynamic 
+constraints for specific
+robot platforms and reduce the stress of the backend 
+optimization part, \TB{kinodynamic} methods are introduced
+in the literature. 
+Donald \etal \cite{donald1993kinodynamic} first proposed 
+the term \TB{kinodynamic} motion planning in the literature.
+The authors proposed he first provably good approximation 
+algorithm about the motion planning for a point-mass model 
+in 2D and 3D environments with polyhedral obstacles.
+
+Other less common method such as model predictive 
 control (MPC) added with obstacle constraints or with 
 additional environment-related 
-terms \cite{park2009obstacle}, \cite{ji2016path}  can be 
-used to generate collision-free paths. 
+terms \cite{park2009obstacle,ji2016path}  can also be 
+used to generate collision-free paths, which is based on 
+quadratic-programming (QP) optimization. 
 However, MPC-related methods need to tradeoff among the 
 length of the time horizon, the computational loads, and 
 optimality. Short time horizon often leads the problem to 
 sub-optimal solutions.
 
-Both search- and sample-based methods can generate 
-geometrically collision-free paths but possibly having 
-great jerks (i.e., the time derivatives of 
-the accelerations) or violating the underlying 
-robots' dynamics.
-For example, most ground vehicles are not 
-holonomic, i.e., they cannot move freely in all directions 
-in 2D space, where their motions are governed by their 
-mechanical and motional constraints.
 
-\subsubsection{Trajectory generation/optimization}
+
+
+\subsubsection{Trajectory generation/optimization (backend)}
 To generate both smooth and kinodynamic feasible 
 trajectories, trajectory optimization is included to 
 solve the problem.
@@ -214,6 +250,8 @@ where $R_{\text{out}}$ is the distance outside the obstacle.
 APF can be used for quadrotor path-planning \cite{chen2016uav}.
 However, when multiple obstacles presented, APF can suffer 
 from the problem of local minimum \cite{koren1991potential}.
+
+VO ...
 
 \subsubsection{Control}
 Control.
