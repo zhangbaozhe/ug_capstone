@@ -49,15 +49,22 @@
 
 \author{
   \IEEEauthorblockN{
-    Baozhe Zhang\IEEEauthorrefmark{1}
+    Baozhe Zhang\textsuperscript{1}, 
+    Yuan Gao\textsuperscript{1,2}, 
+    and Tin Lun Lam\textsuperscript{1,2}
   }
 }
 
 \maketitle
 
 \begingroup
-\renewcommand\thefootnote{\IEEEauthorrefmark{1}}
-\footnotetext{School of Science and Engineering, The Chinese University of Hong Kong, Shenzhen, China. (Email: \texttt{\{baozhezhang\}@link.cuhk.edu.cn})}
+\renewcommand\thefootnote{\textsuperscript{1}}
+\footnotetext{School of Science and Engineering, 
+The Chinese University of Hong Kong, Shenzhen, China. 
+(Email: \texttt{\{baozhezhang\}@link.cuhk.edu.cn})}
+\renewcommand\thefootnote{\textsuperscript{2}}
+\footnotetext{Shenzhen Institute of Artificial Intelligence
+and Robotics for Society (AIRS), Shenzhen, China} 
 \endgroup
 
 % The paper headers
@@ -130,7 +137,11 @@ kd-tree, octo,
 \input{../figures/planning_concept.tex}
 In general, path-planning algorithms for robot navigation 
 can be divided into two major categories: 
-global and local methods.  
+global and local methods.
+\footnote{The reader should note that there is no strict 
+line between global and local planning methods, since
+it can also be argued that with high-frequency global
+re-planning, the local path-planning can be avoided.}  
 Global methods focus on finding collision-free paths from 
 the current robot position to a global goal position mostly 
 in static scenes, while local methods tend to reactively 
@@ -158,8 +169,8 @@ from three major directions: \TB{search-based},
 search (DFS) \cite{cormen2022introduction}, 
 breadth-first search (BFS) \cite{cormen2022introduction}, 
 Dijkstra \cite{wang2011application}, and 
-A* \cite{hart1968formal}, use path-search methods 
-with (or without) certain pre-defined heuristics to find 
+A* \cite{hart1968formal}, use graph-search methods 
+possibly with certain pre-defined heuristics to find 
 geometrically feasible paths on given grid maps. 
 A key assumption for these methods to perform path-finding 
 is the map is given, which can be difficult to be obtained 
@@ -169,18 +180,21 @@ can have longer search time when the space scales.
 % Alg.~\ref{alg:a_star} shows the A* path-planning algorithm which returns the shortest path from the source node to the target node. 
 \TB{Sample-based} methods such as rapidly exploring random 
 tree (RRT), probabilistic roadmap (PRM), and their 
-variants use sampling in the configuration space (C-Space) 
+variants (e.g., RRT* and PRM*) use sampling in the 
+configuration space (C-Space) 
 to crate collision-free paths \cite{lavalle2001rapidly,
 karaman2011sampling,kavraki1996probabilistic}. 
-% The general form of RRT algorithm can be found in 
-% Alg.~\ref{alg:rrt}.
-% \input{../algorithms/rrt.tex}
+The general form of RRT algorithm can be found in 
+Alg.~\ref{alg:rrt}.
+\input{../algorithms/rrt.tex}
 However, the tree nodes in these methods need to cover the 
 whole C-Space which may suffer from heavy computational 
 loads especially when the space is large.  
 
 Both search- and sample-based methods can generate 
-geometrically collision-free paths but possibly jerky or 
+geometrically collision-free paths but possibly jerky
+\footnote{Jerk $\B{j}$ is the third time-derivative 
+of the position $\B{p}$} or 
 violating the underlying robots' dynamics.
 For example, most ground vehicles are not 
 holonomic, i.e., they cannot move freely in all directions 
@@ -197,13 +211,25 @@ the term \TB{kinodynamic} motion planning in the literature.
 The authors proposed the first provably good approximation 
 algorithm about the motion planning for a point-mass model 
 in 2D and 3D environments with polyhedral obstacles.
-State-lattice method is also used for kinodynamic motion 
-planning. 
-In \cite{zhou2019robust}, the authors use a state-lattice
-method in the frontend to generate possible motion 
+State-lattice method \cite{pivtoraiko2011kinodynamic} is also 
+used for kinodynamic motion 
+planning, where the boundary value problem (BVP) needs to be 
+solved to get the corresponding control inputs 
+for the sampled states. 
+In \cite{zhou2019robust}, the authors propose a method 
+sampling in the control space to generate possible motion 
 primitives and then 
 based on these motions search and select kinodynamic 
 feasible paths. 
+Webb and Berg \cite{webb2013kinodynamic} propose the method
+kinodynamic RRT* generalizing the
+earlier work on RRT* \cite{karaman2011sampling} for kinodynamic 
+systems, as it guarantees asymptotic optimality for 
+any system with controllable linear
+dynamics, in state spaces of any dimension.
+\cite{dolgov2008practical,dolgov2009autonomous,dolgov2010path}
+propose the algorithm hybrid A* (or hybrid-state A*) extending 
+original A* algorithm for kinodynamic graph searching.
 
 Other less common method such as model predictive 
 control (MPC) added with obstacle constraints or with 
@@ -219,10 +245,38 @@ sub-optimal solutions.
 
 
 
-\subsubsection{Trajectory generation/optimization (backend)}
-To generate both smooth and kinodynamic feasible 
-trajectories, trajectory optimization is included to 
-solve the problem.
+\subsubsection{Trajectory generation and optimization (backend)}
+Most path-finding algorithms only generate geometric 
+feasible paths, without any time information. 
+The goal for trajectory generation and optimization is to 
+provide both spatial and temporal profiles based on the 
+found paths \cite{quan2020survey}. 
+In essential, the trajectory is a geometric path parametrized 
+in time, with guaranteed kinodynamic feasibility and smoothness.
+Usually, it is optimized with goals such as minimizing the 
+total ``energy'' spent along the path while satisfying the 
+kinodynamic constraints of the robots.
+Mellinger and Kumar \cite{mellinger2011minimum} propose 
+a minimum snap trajectory generation method based on the 
+differential flat property of the quadrotor or multirotor 
+systems. 
+This method uses quadratic-programming (QP) optimization with 
+hard constraints for flight corridors to generate optimal 
+trajectories. 
+In the literature, one of the prevalent methods is 
+interpolating curves \cite{dong2023review}.
+Zhou \etal \cite{zhou2019robust} propose a trajectory 
+optimization method based on the convex hull property of 
+B-splines and provide a time adjustment method for it.
+Wang \etal \cite{wang2022geometrically} propose a 
+minimum-control (MINCO) trajectory family based on 
+multi-degree polynomials that can be 
+optimized with user-defined state-input constraints for 
+multi-copter motion planning.
+Gradient-based methods such as
+CHOMP \cite{ratliff2009chomp} and 
+EGO-Planner \cite{zhou2020ego} are also popular methods 
+for trajectory optimization.
 
 \subsubsection{Local methods}
 Most global methods perform well in static environments, 
@@ -258,13 +312,35 @@ where $R_{\text{out}}$ is the distance outside the obstacle.
 APF can be used for quadrotor path-planning \cite{chen2016uav}.
 However, when multiple obstacles presented, APF can suffer 
 from the problem of local minimum \cite{koren1991potential}.
-
-VO ...
+Dynamic window approach (DWA) \cite{seder2007dynamic} can 
+be used for dynamic obstacle avoidance, where DWA considers
+the kinodynamic feasibility of the robot and samples in the 
+velocity space to generate motion primitives for collision 
+avoidance. 
+The idea of velocity obstacle (VO) is proposed and generalized
+by Van Den Berg \cite{van2011reciprocal,van2011reciprocal2,bareiss2013reciprocal}.
+Reciprocal VO-based obstacle avoidance methods can be used for
+for motion planning for robots.  
+However, the smoothness of the generated paths cannot be 
+guaranteed. 
+Dynamical system modulation (DSM)
+\cite{khansari2012dynamical,huber2022fast,huber2023avoidance}
+is another approach to achieve obstacle avoidance for local
+motion planning, which directly changes the first-order 
+linear system of the robot (point-mass model) to guide the 
+robot away from the obstacle by adding a linear transformation
+(obtained from the environments) to the initial velocity of 
+the robot.
+However, the algorithms are limited with star-shaped obstacles, 
+and the performance of DSM on agile robots such as quadrotors
+is still skeptical.
 
 \subsubsection{Control}
-Control.
+In traditional planning and control pipeline, the two modules
+are separated, where the control module is responsible for 
+trajectory tracking. 
 
-\subsection{RL-based Planning and Control Methods}
+\subsection{RL-based Planning and Control}
 
 \subsection{Multi-robot Planning and Control}
 
