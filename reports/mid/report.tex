@@ -40,9 +40,8 @@
 \usetikzlibrary{shadows.blur}
 \usetikzlibrary{shapes}
 
-\newcommand{\B}[1]{\boldsymbol{#1}}
-\newcommand{\TB}[1]{\textbf{#1}}
-\newcommand{\etal}{\textit{et al.}}
+
+\input{../meta}
 
 \begin{document}
 
@@ -124,6 +123,7 @@ kd-tree, octo,
 
 
 
+
 \subsection{Traditional Planning and Control Methods}
 
 
@@ -155,7 +155,8 @@ from three major directions: \TB{search-based},
 
 % \input{../algorithms/a_star.tex}
 \TB{Search-based} algorithms such as depth-first 
-search (DFS), breadth-first search (BFS), 
+search (DFS) \cite{cormen2022introduction}, 
+breadth-first search (BFS) \cite{cormen2022introduction}, 
 Dijkstra \cite{wang2011application}, and 
 A* \cite{hart1968formal}, use path-search methods 
 with (or without) certain pre-defined heuristics to find 
@@ -171,9 +172,9 @@ tree (RRT), probabilistic roadmap (PRM), and their
 variants use sampling in the configuration space (C-Space) 
 to crate collision-free paths \cite{lavalle2001rapidly,
 karaman2011sampling,kavraki1996probabilistic}. 
-The general form of RRT algorithm can be found in 
-Alg.~\ref{alg:rrt}.
-\input{../algorithms/rrt.tex}
+% The general form of RRT algorithm can be found in 
+% Alg.~\ref{alg:rrt}.
+% \input{../algorithms/rrt.tex}
 However, the tree nodes in these methods need to cover the 
 whole C-Space which may suffer from heavy computational 
 loads especially when the space is large.  
@@ -193,9 +194,16 @@ optimization part, \TB{kinodynamic} methods are introduced
 in the literature. 
 Donald \etal \cite{donald1993kinodynamic} first proposed 
 the term \TB{kinodynamic} motion planning in the literature.
-The authors proposed he first provably good approximation 
+The authors proposed the first provably good approximation 
 algorithm about the motion planning for a point-mass model 
 in 2D and 3D environments with polyhedral obstacles.
+State-lattice method is also used for kinodynamic motion 
+planning. 
+In \cite{zhou2019robust}, the authors use a state-lattice
+method in the frontend to generate possible motion 
+primitives and then 
+based on these motions search and select kinodynamic 
+feasible paths. 
 
 Other less common method such as model predictive 
 control (MPC) added with obstacle constraints or with 
