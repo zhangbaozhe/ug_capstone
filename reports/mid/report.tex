@@ -49,9 +49,7 @@
 
 \author{
   \IEEEauthorblockN{
-    Baozhe Zhang\textsuperscript{1}, 
-    Yuan Gao\textsuperscript{1,2}, 
-    and Tin Lun Lam\textsuperscript{1,2}
+    Baozhe Zhang\textsuperscript{1} 
   }
 }
 
@@ -61,10 +59,9 @@
 \renewcommand\thefootnote{\textsuperscript{1}}
 \footnotetext{School of Science and Engineering, 
 The Chinese University of Hong Kong, Shenzhen, China. 
-(Email: \texttt{\{baozhezhang\}@link.cuhk.edu.cn})}
-\renewcommand\thefootnote{\textsuperscript{2}}
-\footnotetext{Shenzhen Institute of Artificial Intelligence
-and Robotics for Society (AIRS), Shenzhen, China} 
+Email: \texttt{\{baozhezhang\}@link.cuhk.edu.cn}.
+Baozhe Zhang is advised by Dr.~Tin Lun Lam and 
+Dr.~Yuan Gao.}
 \endgroup
 
 % The paper headers
@@ -121,15 +118,63 @@ the trained models (e.g., neural networks) can be deployed
 on real robots for autonomous navigation in various static 
 or dynamic environments.
 
-\subsection{Map Representation and Configuration Space}
-TODO: Occupancy, grid, ESDF, TSDF, topological
+\subsection{Configuration Space and Map Representation}
+The configuration space (C-Space) contains all possible transformations
+for robots. 
+For a robot with $n$ degrees of freedom, the set of 
+transformations, which is a manifold with dimension $n$, is 
+the configuration space for that robot, denoted by $\robotConfig$
+\cite{quan2020survey}. 
+For example, the C-Space for the 2D rigid body is $SE(2)$ 
+and for the 3D rigid body is $SE(3)$.
+The obstacle region $\robotConfig_{\text{obs}} \subseteq \robotConfig$ 
+is the transformations that the robot collide with the obstacles. 
+The free space is defined as $\robotConfig_{\text{free}} = 
+\robotConfig \backslash \robotConfig_{\text{obs}}$.
+Therefore, the motion planning problem can be formulated as 
+finding a path 
+\begin{equation}
+  \tau : \left[0,1\right]\rightarrow \robotConfig_{\text{free}}
+\end{equation}
+such that $\tau(0) = q_{\text{start}} 
+\in \robotConfig_{\text{free}}$ and 
+$\tau(1) = q_{\text{goal}} \in \robotConfig_{\text{free}}$
+are the start and goal transformations, respectively.
 
-kd-tree, octo, 
-
-
-
-
-
+Although mapping technique is usually coupled with the problem 
+simultaneous localization and mapping (SLAM), mapping with
+known pose of the robot is important as well. 
+Many motion planning algorithms assume given maps, which means, 
+in other words, the pose of the robot is known. 
+One of the prevalent mapping representation is occupancy 
+grid map \cite{elfes2013occupancy}, which divides the space
+into cells (2D or 3D) storing the probabilistic estimate of the 
+states (occupied or not).
+Some data structure can be used to efficiently 
+represent the space. 
+The K-Dimensional Tree (K-D Tree) is an efficient data
+structure that organizes multi-dimensional point data 
+\cite{bentley1975multidimensional}
+which enables fast search of nearest neighbors.
+Incremental K-D Tree (ikd-tree) \cite{cai2021ikd} 
+incrementally updates the K-D tree with only new points.
+Octomap \cite{wurm2010octomap} based on octrees using 
+probabilistic occupancy estimation proposes a compact 
+data structure for map representation.
+Another approach for volumetric representation is based on 
+signed distance fields (SDFs) introduced in the computer
+graphics literature \cite{curless1996volumetric}.
+In recent robotic applications, \cite{lin2018autonomous} uses
+truncated signed distance fields (TSDFs)
+\footnote{The TSDF of a voxel is defined as the nearest 
+distance to the surrounding surface in a truncation distance. 
+If the voxel is between the robot and the surface, 
+the value is positive, negative otherwise. }
+to reconstruct the surfaces around the MAV. 
+\cite{oleynikova2017voxblox} and later \cite{han2019fiesta}
+use Euclidean signed distance fields (ESDFs) to incrementally
+update the voxel map with distance and gradient information, 
+which is convenient for gradient-based trajectory optimization.
 
 \subsection{Traditional Planning and Control Methods}
 
@@ -141,7 +186,7 @@ global and local methods.
 \footnote{The reader should note that there is no strict 
 line between global and local planning methods, since
 it can also be argued that with high-frequency global
-re-planning, the local path-planning can be avoided.}  
+re-planning, local path planning can be avoided.}  
 Global methods focus on finding collision-free paths from 
 the current robot position to a global goal position mostly 
 in static scenes, while local methods tend to reactively 
@@ -180,8 +225,7 @@ can have longer search time when the space scales.
 % Alg.~\ref{alg:a_star} shows the A* path-planning algorithm which returns the shortest path from the source node to the target node. 
 \TB{Sample-based} methods such as rapidly exploring random 
 tree (RRT), probabilistic roadmap (PRM), and their 
-variants (e.g., RRT* and PRM*) use sampling in the 
-configuration space (C-Space) 
+variants (e.g., RRT* and PRM*) use sampling in C-Space. 
 to crate collision-free paths \cite{lavalle2001rapidly,
 karaman2011sampling,kavraki1996probabilistic}. 
 The general form of RRT algorithm can be found in 
@@ -336,9 +380,32 @@ and the performance of DSM on agile robots such as quadrotors
 is still skeptical.
 
 \subsubsection{Control}
-In traditional planning and control pipeline, the two modules
-are separated, where the control module is responsible for 
-trajectory tracking. 
+The control module is usually responsible for trajectory 
+tracking (TT) tasks for planning and control.
+Despite the low-level controllers of the actuators of the 
+robots, which track the setpoints of torques, angular 
+velocities, or accelerations, the controllers used in TT
+phase focus on designing controllers based on system
+equations so that robots can track a given reference 
+trajectory asymptotically. 
+\cite{majd2019stable} proposes using the input-output 
+linearization technique to optimize the tracking error for
+car-like robot trajectory tracking.
+Model predictive control (MPC) or receding horizon control (RHC)
+is also a popular method to perform TT via optimization.
+\cite{kunhe2005mobile} used non-linear MPC to control the 
+wheeled robots for TT.
+\cite{romero2022model,ji2021cmpcc} propose model predictive
+contouring control (MPCC) by adding the time profile to the 
+controller design to minimize the traversal time while tracking
+the reference trajectory.
+Thanks to the flexibility of the framework of MPC, the model 
+can be reformulated to satisfy different needs. 
+In \cite{zhang2023coni}, the authors propose cooperative 
+non-inertial frame based model predictive control (CoNi-MPC), 
+which directly formulates the quadrotor model in a target's 
+body non-inertial frame and controls the quadrotor tracking 
+trajectories pre-defined in the target's frame.
 
 \subsection{RL-based Planning and Control}
 
