@@ -91,6 +91,9 @@ operate.
 The planning and control system for plays a great role for 
 unmanned aerial vehicles (UAVs) to perform the 
 above mentioned tasks autonomously.
+Compared to learning-based methods, traditional planning 
+and control pipeline includes decoupled 
+motion planning and control modules.
 
 \section{Related Work}
 
@@ -144,9 +147,8 @@ are the start and goal transformations, respectively.
 Although mapping technique is usually coupled with the problem 
 simultaneous localization and mapping (SLAM), mapping with
 known pose of the robot is important as well. 
-Many motion planning algorithms assume given maps, which means, 
-in other words, the pose of the robot is known. 
-One of the prevalent mapping representation is occupancy 
+Many motion planning algorithms assume given maps. 
+One of the prevalent map representations is occupancy 
 grid map \cite{elfes2013occupancy}, which divides the space
 into cells (2D or 3D) storing the probabilistic estimate of the 
 states (occupied or not).
