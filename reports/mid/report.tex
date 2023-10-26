@@ -79,7 +79,8 @@ TODO
 \end{abstract}
 
 \begin{IEEEkeywords}
-  TODO
+  Multi-robot System, Quadrotor, Motion Planning, Control, 
+  Obstacle Avoidance, Deep Reinforcement Learning
 \end{IEEEkeywords}
 
 \section{Introduction}
@@ -93,7 +94,88 @@ unmanned aerial vehicles (UAVs) to perform the
 above mentioned tasks autonomously.
 Compared to learning-based methods, traditional planning 
 and control pipeline includes decoupled 
-motion planning and control modules.
+motion planning and control modules, 
+while learning-based methods, e.g., deep reinforcement 
+learning (DRL) based methods, try to combine the planning 
+and control into end-to-end unified frameworks by trials
+and learning with specific reward function settings.
+
+Traditional planning and control pipelines for robots' 
+autonomous navigation has been thoroughly studied in recent
+decades in the literature. 
+Many complete systems including simultaneous localization 
+and mapping (SLAM) and hierarchical 
+planning and control frameworks can achieve outstanding 
+autonomy.
+For example, \cite{zhou2019robust} proposes a robust and efficient 
+quadrotor motion planning system for fast flight in 
+three-dimensional complex environments.
+\cite{quan2023robust} introduces a distributed motion planning 
+trajectory optimization framework for large-scale quadrotor 
+formation flight in dense environments.
+Although traditional methods can achieve outstanding
+autonomy, there are limitations and challenges for these methods: 
+\begin{itemize}
+  \item \TB{Complexity}. The hierarchical planning and control 
+  methods contain many layers of modules and 
+  each needs fine tuning of 
+  its parameters, increasing the overall complexity of the system.
+  \item \TB{Inaccuracy}. Traditional methods need specific 
+  dynamic system equations (differential equations) of the 
+  robots which may not be accurate and consistent with the real 
+  robot model.
+  \item \TB{Difficulty in generalization}. Many methods are 
+  designed to target robot platforms, which lacks the ability
+  to generalize the planning methods to other robot platforms
+  or tasks.
+\end{itemize}
+
+The planning capability of the 
+classical hierarchical motion planning framework is 
+challenged, 
+as the complexity and randomness of robot application 
+scenarios increase. With 
+the development of machine learning, deep reinforcement 
+learning (DRL)-based motion planner has gradually become a 
+popular research topic.
+Reinforcement learning (RL) also has a long history in the 
+machine learning literature. 
+The primary research issue of RL is to tradeoff between 
+exploration and exploitation. 
+With depp learning (DL) becoming popular in computer vision
+and other fields, researchers utilize deep neural network 
+(DNN) into RL to integrate the learning module and the 
+decision module, and realize the nonlinear mapping 
+procedure from the raw state inputs to the final action 
+decisions\cite{dong2023review}.
+The recent emerged DRL methods have shown great potentials 
+in planning and control for robots to navigate and 
+manipulate
+\cite{lee2020learning,hwangbo2017control,gu2017deep}.
+DRL-based motion planning and control brings insights to 
+overcome the challenges faced by the traditional methods: 
+\begin{itemize}
+  \item \TB{Unified framework}. The DRL-based method 
+  provides an end-to-end unified framework for planning 
+  and control, which maps the  state estimate to the 
+  corresponding action for various tasks.
+  \item \TB{Data-driven model}. The model trained by many
+  DRL methods requires huge amount of data, where the 
+  trained model learns the subtle residual dynamics of 
+  the robot by trials with the environments.
+  \item \TB{Generalization}. Since many DRL methods are 
+  model-free, the training can be generalized to different 
+  robot platforms and even for many other tasks by changing 
+  the reward functions defined in DRL algorithms.
+\end{itemize}
+
+In this report, we propose to use DRL for multi-drone 
+motion planning and control in dynamic environments for 
+formation flight and gate crossing in a team.
+The quadrotors are required to fly to cross static 
+or dynamic gates to earn scores and achieve maximum scores
+in minimum time. 
+
 
 \section{Related Work}
 
