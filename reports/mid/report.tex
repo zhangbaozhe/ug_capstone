@@ -75,7 +75,7 @@ Dr.~Yuan Gao.}
 
 
 \begin{abstract}
-TODO
+  Micro aerial vehicles (MAVs) or unmanned aerial vehicles (UAVs), popularly referred to as drones, have seen an upsurge in applications across diverse industries. Their rising prominence is also due to the need for multi-drone operations in dynamic environments, posing significant challenges in navigation and coordination. While traditional motion planning and control algorithms have achieved notable milestones, they are often constrained by system complexity, modeling limitations, and lack of generalizability. This report highlights the potential of Deep Reinforcement Learning (DRL) as an alternative approach. With its capabilities for end-to-end training, scalability, data-driven modeling, and task generalization, DRL presents a promising avenue to overcome traditional limitations. Specifically, we aim to harness DRL's potential to enable a quadrotor team to navigate through a combination of static and dynamic gates, emphasizing efficiency and score optimization. The exploration encapsulates DRL's promise in navigating advanced robotic challenges in contemporary dynamic environments.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -541,11 +541,65 @@ inertial matrix $\B{J}$.
 The dynamics of the system can be formulates as: 
 \[
 \begin{aligned}
-  11
+  \dot{\B{p}} &= \B{v}
+  \\  
+  \dot{\B{v}} &= {}^W\B{q}_B \odot {}^B\B{c} + \B{g}
+  \\
+  {}^W\dot{\B{q}}_B &= \frac{1}{2} {}^W\B{q}_B \odot {}^B\B{\omega}
+  \\
+  {}^B\dot{\B{\omega}} &= 
+  \B{J}^{-1}({}^B\B{\eta} - {}^B\B{\omega} \times \B{J}{}^B\B{\omega})
 \end{aligned}
 \]
+where $\B{p}$ and $\B{v}$ are the position and velocity 
+vectors in the world frame $W$. 
+We use a unit quaternion 
+${}^W\B{q}_B = \left[q_w, q_x, q_y, q_z\right]^\top$ 
+to represent the rotation transformation from body frame 
+$B$ to world frame $W$
+and 
+${}^B\omega = \left[\omega_x, \omega_y, \omega_z\right]^\top$ to denote the angular velocity (body rates) in the 
+body frame $B$.
+The gravity vector $\B{g}$ is $\left[0,0,-g_z\right]$ where
+$g_z$ is $9.81\;\text{m}\;\text{s}^{-2}$.
+Finally, $\B{c} = \left[0,0,c\right]$ is the collective 
+mass-normalized thrust in the body frame $B$. 
+The conversion of single rotor thrusts 
+$\left[f_1, f_2, f_3, f_4\right]$ to 
+mass-normalized thrust $c$ 
+and body torques $\B{eta}$ is formulated as
+\[
+  c = \frac{1}{m}\sum_{i=1}^4 f_i,\;
+  \B{\eta} = 
+  \begin{bmatrix}
+    l/\sqrt{2}(f_1 - f_2 - f_3 + f_4) \\
+    l/\sqrt{2}(-f_1 - f_2 + f_3 + f_4) \\
+    \kappa(f_1 - f_2 + f_3 - f_4)
+  \end{bmatrix}
+\]
+where $l$ is the arm length and $\kappa$ is the torque 
+constant.
+For each motor force $f_i$, it is modeled as 
+$f_i = \alpha \omega_i^2$ where $\alpha$ is the motor 
+force constant and $\omega_i$ is the motor's rotation speed
+(rad/s).
+The full state of the quadrotor is defined as 
+$\B{x} = \left[\B{p}, \B{v}, {}^W{\B{q}}_B, 
+{}^B\B{\omega}\right]^\top$ and the input as 
+$\B{u} = \left[\omega_1, \omega_2, \omega_3, 
+\omega_4\right]^\top$.
 
 \subsection{Task Formulation}
+The goal for the quadrotor team is to fly across as many as 
+static and dynamic gates from the start position 
+$\B{p}_\text{start}$ to the goal position 
+$\B{p}_\text{goal}$ in minimum time. 
+Assume we have $N$ number of quadrotors and $M$ gates. 
+The position of and orientation of each gate is denoted 
+as $\B{p}_i$ and $\B{q}_i$, respectively.
+This task requires that the team trades off between 
+exploration and exploitation to cross maximum number of 
+gates while flying to the goal position in minimum time.
 
 \bibliographystyle{IEEEtran}
 \bibliography{report}
