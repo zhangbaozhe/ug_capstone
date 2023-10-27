@@ -45,7 +45,7 @@
 
 \begin{document}
 
-\title{Multi-drone Motion Planning \& Control in Dynamic Environment based on Deep Reinforcement Learning}
+\title{Multi-drone Motion Planning \& Control in Dynamic Environments based on Deep Reinforcement Learning}
 
 \author{
   \IEEEauthorblockN{
@@ -85,25 +85,26 @@ TODO
 
 \section{Introduction}
 \IEEEPARstart{R}{ecently}, micro aerial vehicles (MAVs) or 
-drones have been widely used in cinematography, search and 
-rescue, inspection, and other tasks that require 
-high-mobility or are difficult and unsafe for humans to 
-operate. 
-The planning and control system for plays a great role for 
-unmanned aerial vehicles (UAVs) to perform the 
-above mentioned tasks autonomously.
-Compared to learning-based methods, traditional planning 
-and control pipeline includes decoupled 
-motion planning and control modules, 
-while learning-based methods, e.g., deep reinforcement 
-learning (DRL) based methods, try to combine the planning 
-and control into end-to-end unified frameworks by trials
-and learning with specific reward function settings.
+unmanned Aerial Vehicles (UAVs), commonly known as drones, 
+have emerged as a powerful tool in a myriad of industries, 
+from agriculture and real estate to filmography and delivery 
+services. 
+Their versatility and cost-effectiveness have led to a 
+surge in applications requiring multiple drones to operate 
+collaboratively. 
+Operating in real-world dynamic environments, 
+these multi-drone systems need to navigate a plethora of 
+challenges, 
+including moving obstacles, inter-drone coordination, and 
+real-time adaptability. 
+Traditional motion planning and control algorithms often fall 
+short when faced with the unpredictability and complexity of such 
+scenarios.
 
 Traditional planning and control pipelines for robots' 
 autonomous navigation has been thoroughly studied in recent
 decades in the literature. 
-Many complete systems including simultaneous localization 
+Many complete systems with simultaneous localization 
 and mapping (SLAM) and hierarchical 
 planning and control frameworks can achieve outstanding 
 autonomy.
@@ -113,68 +114,75 @@ three-dimensional complex environments.
 \cite{quan2023robust} introduces a distributed motion planning 
 trajectory optimization framework for large-scale quadrotor 
 formation flight in dense environments.
-Although traditional methods can achieve outstanding
-autonomy, there are limitations and challenges for these methods: 
+Although traditional methods can achieve great performance, 
+there are limitations and challenges for these methods: 
 \begin{itemize}
   \item \TB{Complexity}. The hierarchical planning and control 
   methods contain many layers of modules and 
   each needs fine tuning of 
   its parameters, increasing the overall complexity of the system.
-  \item \TB{Inaccuracy}. Traditional methods need specific 
-  dynamic system equations (differential equations) of the 
-  robots which may not be accurate and consistent with the real 
-  robot model.
-  \item \TB{Difficulty in generalization}. Many methods are 
-  designed to target robot platforms, which lacks the ability
-  to generalize the planning methods to other robot platforms
-  or tasks.
+  \item \TB{Modeling Limitation}. Traditional methods rely on 
+  accurate models of the environment and the system. However, 
+  creating precise models, especially for complex systems like 
+  drones, can be challenging. Small discrepancies between the 
+  model and reality can lead to significant performance 
+  degradation. 
+  \item \TB{Generalizability}. Many traditional methods are 
+  tailored to specific tasks, environments, 
+  or robot platforms. Transferring them 
+  to new tasks or settings often demands significant 
+  modifications. 
 \end{itemize}
 
-The planning capability of the 
+The capability of the 
 classical hierarchical motion planning framework is 
 challenged, 
 as the complexity and randomness of robot application 
-scenarios increase. With 
-the development of machine learning, deep reinforcement 
-learning (DRL)-based motion planner has gradually become a 
-popular research topic.
-Reinforcement learning (RL) also has a long history in the 
-machine learning literature. 
-The primary research issue of RL is to tradeoff between 
-exploration and exploitation. 
-With depp learning (DL) becoming popular in computer vision
-and other fields, researchers utilize deep neural network 
-(DNN) into RL to integrate the learning module and the 
-decision module, and realize the nonlinear mapping 
-procedure from the raw state inputs to the final action 
-decisions\cite{dong2023review}.
-The recent emerged DRL methods have shown great potentials 
-in planning and control for robots to navigate and 
-manipulate
+scenarios increase. 
+Recent advancements in artificial intelligence have fostered 
+the development of Deep Reinforcement Learning (DRL) - a branch 
+of machine learning that trains agents to make sequential 
+decisions by interacting with an environment. DRL has shown 
+promise in addressing complex problems in robotics 
+due to its ability to learn from large 
+amounts of data and adapt to changes in real-time
 \cite{lee2020learning,hwangbo2017control,gu2017deep}.
 DRL-based motion planning and control brings insights to 
 overcome the challenges faced by the traditional methods: 
 \begin{itemize}
-  \item \TB{Unified framework}. The DRL-based method 
-  provides an end-to-end unified framework for planning 
-  and control, which maps the  state estimate to the 
-  corresponding action for various tasks.
-  \item \TB{Data-driven model}. The model trained by many
-  DRL methods requires huge amount of data, where the 
-  trained model learns the subtle residual dynamics of 
-  the robot by trials with the environments.
+  \item \TB{Unified framework}. DRL allows for unified end-to-end 
+  training and inference where both planning and control can be 
+  learned 
+  jointly, potentially leading to more cohesive and optimal 
+  solutions.
+  \item \TB{Scalability with multiple agents}.  DRL can be 
+  extended to multi-agent scenarios using techniques like 
+  multi-agent reinforcement learning, enabling cooperative or 
+  competitive behaviors among agents.
+  \item \TB{Data-driven model}. Unlike model-based methods which 
+  require precise system models, DRL can learn planning and  
+  control policies directly from interaction data, potentially  
+  avoiding modeling inaccuracies.
   \item \TB{Generalization}. Since many DRL methods are 
   model-free, the training can be generalized to different 
   robot platforms and even for many other tasks by changing 
   the reward functions defined in DRL algorithms.
 \end{itemize}
 
-In this report, we propose to use DRL for multi-drone 
-motion planning and control in dynamic environments for 
-formation flight and gate crossing in a team.
-The quadrotors are required to fly to cross static 
-or dynamic gates to earn scores and achieve maximum scores
-in minimum time. 
+
+Traditional motion planning and control methods have long 
+provided 
+reliable solutions in robotics. 
+However, with the increasing complexity of tasks like navigating in dynamic and stochastic environments, their 
+limitations emerge. 
+In this report, we propose to utilize the
+adaptability of DRL to address 
+these limitations. 
+We aim to guide a quadrotor team through a mix of static 
+and dynamic gates, striving for maximum scores in minimal time. 
+This task will demonstrate the potential of DRL in advanced 
+robotic navigation challenges.
+
 
 
 \section{Related Work}
@@ -260,7 +268,7 @@ use Euclidean signed distance fields (ESDFs) to incrementally
 update the voxel map with distance and gradient information, 
 which is convenient for gradient-based trajectory optimization.
 
-\subsection{Traditional Planning and Control Methods}
+\subsection{Traditional Planning and Control}
 
 
 \input{../figures/planning_concept.tex}
@@ -312,9 +320,9 @@ tree (RRT), probabilistic roadmap (PRM), and their
 variants (e.g., RRT* and PRM*) use sampling in C-Space. 
 to crate collision-free paths \cite{lavalle2001rapidly,
 karaman2011sampling,kavraki1996probabilistic}. 
-The general form of RRT algorithm can be found in 
-Alg.~\ref{alg:rrt}.
-\input{../algorithms/rrt.tex}
+% The general form of RRT algorithm can be found in 
+% Alg.~\ref{alg:rrt}.
+% \input{../algorithms/rrt.tex}
 However, the tree nodes in these methods need to cover the 
 whole C-Space which may suffer from heavy computational 
 loads especially when the space is large.  
@@ -491,13 +499,51 @@ which directly formulates the quadrotor model in a target's
 body non-inertial frame and controls the quadrotor tracking 
 trajectories pre-defined in the target's frame.
 
-\subsection{RL-based Planning and Control}
+\subsection{DRL-based Planning and Control}
+Deep Reinforcement Learning (DRL), which combines deep learning 
+and reinforcement learning (RL), 
+has become increasingly popular in the field of motion planning 
+and control. 
+Its adaptability, ability to learn from raw data, and scalability 
+have made it an attractive choice for researchers.
+For instance, Mnih \etal introduced the deep Q network (DQN), 
+a DRL algorithm capable of achieving human-level performance in various video games \cite{mnih2015human}. 
+This breakthrough has established a precedent for applying 
+DQN in motion planning and control for robots. 
+Additionally, Lillicrap \etal went on to expand the 
+capabilities of DQN by proposing the deep deterministic policy 
+gradient (DDPG) algorithm. 
+This algorithm facilitates learning policies in continuous action 
+spaces, a necessary feature for most real-world control tasks 
+\cite{lillicrap2015continuous}.
 
-\subsection{Multi-robot Planning and Control}
+In the context of aerial vehicles, Zhang \etal integrated Model Predictive Control (MPC) with DRL. 
+They demonstrated the combination through guided policy search 
+with an MPC controller in simulation. 
+Their work employed a policy that maps raw sensor data to rotor 
+velocities to achieve obstacle avoidance \cite{zhang2016learning}. 
+Moreover, Kahn \etal proposed a DRL methodology that excelled in 
+navigation tasks using raw monocular camera images \cite{kahn2018self}.
+
+The application of DRL in drone racing and agile flight dynamics 
+has received significant attention in recent studies \cite{loquercio2019deep, song2021autonomous, song2022policy, penicka2022learning, song2023reaching}. 
+These studies highlight the effectiveness of DRL in motion 
+planning and control, particularly in addressing the demands of 
+high-speed agile navigation for quadrotors.
+
 
 \section{Problem Formulation}
 
 \subsection{Quadrotor Dynamics}
+The quadrotor used in the task is modeled as a 6 degree-of-
+freedom rigid body with mass $m$ and diagonal moment of 
+inertial matrix $\B{J}$.
+The dynamics of the system can be formulates as: 
+\[
+\begin{aligned}
+  11
+\end{aligned}
+\]
 
 \subsection{Task Formulation}
 
