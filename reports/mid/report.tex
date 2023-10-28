@@ -49,15 +49,15 @@
 
 \author{
   \IEEEauthorblockN{
-    Baozhe Zhang\textsuperscript{1} 
+    Baozhe Zhang
   }
 }
 
 \maketitle
 
 \begingroup
-\renewcommand\thefootnote{\textsuperscript{1}}
-\footnotetext{School of Science and Engineering, 
+\renewcommand\thefootnote{}
+\footnotetext{Baozhe Zhang is with School of Science and Engineering, 
 The Chinese University of Hong Kong, Shenzhen, China. 
 Email: \texttt{\{baozhezhang\}@link.cuhk.edu.cn}.
 Baozhe Zhang is advised by Dr.~Tin Lun Lam and 
@@ -86,23 +86,23 @@ Dr.~Yuan Gao.}
 \section{Introduction}
 \IEEEPARstart{R}{ecently}, micro aerial vehicles (MAVs) or 
 unmanned Aerial Vehicles (UAVs), commonly known as drones, 
-have emerged as a powerful tool in a myriad of industries, 
-from agriculture and real estate to filmography and delivery 
+have emerged as a powerful tool in various industries, 
+ranging from agriculture and real estate to filmography and delivery 
 services. 
 Their versatility and cost-effectiveness have led to a 
-surge in applications requiring multiple drones to operate 
+surge in applications that require multiple drones to operate 
 collaboratively. 
 Operating in real-world dynamic environments, 
-these multi-drone systems need to navigate a plethora of 
+these multi-drone systems need to navigate a wide range of 
 challenges, 
 including moving obstacles, inter-drone coordination, and 
 real-time adaptability. 
-Traditional motion planning and control algorithms often fall 
-short when faced with the unpredictability and complexity of such 
+Traditional motion planning and control algorithms often  
+struggle when faced with the unpredictability and complexity of such 
 scenarios.
 
-Traditional planning and control pipelines for robots' 
-autonomous navigation has been thoroughly studied in recent
+The traditional planning and control pipelines for robots' 
+autonomous navigation have been extensively studied in recent
 decades in the literature. 
 Many complete systems with simultaneous localization 
 and mapping (SLAM) and hierarchical 
@@ -114,12 +114,12 @@ three-dimensional complex environments.
 \cite{quan2023robust} introduces a distributed motion planning 
 trajectory optimization framework for large-scale quadrotor 
 formation flight in dense environments.
-Although traditional methods can achieve great performance, 
-there are limitations and challenges for these methods: 
+Although traditional methods can achieve impressive performance, 
+there are limitations and challenges associated with these methods: 
 \begin{itemize}
   \item \TB{Complexity}. The hierarchical planning and control 
-  methods contain many layers of modules and 
-  each needs fine tuning of 
+  methods consist of multiple layers of modules,   
+  each of which requires fine-tuning of 
   its parameters, increasing the overall complexity of the system.
   \item \TB{Modeling Limitation}. Traditional methods rely on 
   accurate models of the environment and the system. However, 
@@ -130,13 +130,13 @@ there are limitations and challenges for these methods:
   \item \TB{Generalizability}. Many traditional methods are 
   tailored to specific tasks, environments, 
   or robot platforms. Transferring them 
-  to new tasks or settings often demands significant 
+  to new tasks or settings often requires significant 
   modifications. 
 \end{itemize}
 
 The capability of the 
 classical hierarchical motion planning framework is 
-challenged, 
+challenged 
 as the complexity and randomness of robot application 
 scenarios increase. 
 Recent advancements in artificial intelligence have fostered 
@@ -147,11 +147,11 @@ promise in addressing complex problems in robotics
 due to its ability to learn from large 
 amounts of data and adapt to changes in real-time
 \cite{lee2020learning,hwangbo2017control,gu2017deep}.
-DRL-based motion planning and control brings insights to 
-overcome the challenges faced by the traditional methods: 
+DRL-based motion planning and control bring insights to 
+overcome the challenges faced by traditional methods: 
 \begin{itemize}
   \item \TB{Unified framework}. DRL allows for unified end-to-end 
-  training and inference where both planning and control can be 
+  training and inference where planning and control can be 
   learned 
   jointly, potentially leading to more cohesive and optimal 
   solutions.
@@ -165,7 +165,7 @@ overcome the challenges faced by the traditional methods:
   avoiding modeling inaccuracies.
   \item \TB{Generalization}. Since many DRL methods are 
   model-free, the training can be generalized to different 
-  robot platforms and even for many other tasks by changing 
+  robot platforms and even to many other tasks by changing 
   the reward functions defined in DRL algorithms.
 \end{itemize}
 
@@ -173,11 +173,12 @@ overcome the challenges faced by the traditional methods:
 Traditional motion planning and control methods have long 
 provided 
 reliable solutions in robotics. 
-However, with the increasing complexity of tasks like navigating in dynamic and stochastic environments, their 
-limitations emerge. 
-In this report, we propose to utilize the
-adaptability of DRL to address 
-these limitations. 
+However, their limitation emerge with the increasing complexity of tasks, 
+such as 
+navigating in dynamic and stochastic environments.
+In this report, we propose to address these limitations
+by utilizing the 
+adaptability of DRL.  
 We aim to guide a quadrotor team through a mix of static 
 and dynamic gates, striving for maximum scores in minimal time. 
 This task will demonstrate the potential of DRL in advanced 
@@ -188,25 +189,25 @@ robotic navigation challenges.
 \section{Related Work}
 
 In this section, we will investigate both traditional 
-and RL-based methods for planning and control in the 
-literature, with more focus on the aerial systems 
+and DRL-based methods for planning and control in the 
+literature, with a focus on aerial systems 
 such as drones or quadrotors.
+
 Traditional planning and control frameworks are decoupled.
-% Path planning module serves as a frontend to find a geometric collision-free path in the given map, and motion planning module, based on the found path, finds the suitable dynamic-feasible motions for the robots. 
-The path-(motion-)planning module serves as a guide system 
-for the low-level controller driving the robot to move. 
+The path-planning (or motion-planning) module serves as a guide system 
+for the low-level controller driving the robot's movement. 
 This module needs to generate a geometrically 
-collision-free and possibly kinodynamic feasible trajectory 
+collision-free and possibly kinodynamically feasible trajectory 
 (or motion setpoints) for the low-level controller.
 Then the low-level control module can use these motion 
 setpoints to control the actuators on the robots to move.
-Recent RL-based methods try to combine these two modules 
-into a coupled system from repeated learning. 
-The robots learn to navigate itself by trials and learning 
+Recent DRL-based methods attempt to combine these two modules 
+into a coupled system through repeated learning. 
+The robots learn to navigate themselves through trials and learning 
 from the environments.
-These trials are mostly conducted in simulations, 
+These trials are mainly conducted in simulations, 
 where high-fidelity physics engines are required. 
-By utilizing certain (deep) RL training methods, 
+By utilizing certain DRL training methods, 
 the trained models (e.g., neural networks) can be deployed 
 on real robots for autonomous navigation in various static 
 or dynamic environments.
@@ -221,48 +222,49 @@ the configuration space for that robot, denoted by $\robotConfig$
 For example, the C-Space for the 2D rigid body is $SE(2)$ 
 and for the 3D rigid body is $SE(3)$.
 The obstacle region $\robotConfig_{\text{obs}} \subseteq \robotConfig$ 
-is the transformations that the robot collide with the obstacles. 
+represents the transformations where the robot collide with the obstacles. 
 The free space is defined as $\robotConfig_{\text{free}} = 
 \robotConfig \backslash \robotConfig_{\text{obs}}$.
 Therefore, the motion planning problem can be formulated as 
 finding a path 
-\begin{equation}
+$
   \tau : \left[0,1\right]\rightarrow \robotConfig_{\text{free}}
-\end{equation}
+$
 such that $\tau(0) = q_{\text{start}} 
 \in \robotConfig_{\text{free}}$ and 
 $\tau(1) = q_{\text{goal}} \in \robotConfig_{\text{free}}$
 are the start and goal transformations, respectively.
 
-Although mapping technique is usually coupled with the problem 
+Although mapping techniques are typically associated 
+with the problem of
 simultaneous localization and mapping (SLAM), mapping with
-known pose of the robot is important as well. 
-Many motion planning algorithms assume given maps. 
-One of the prevalent map representations is occupancy 
+known poses of the robot is also important. 
+Many motion planning algorithms rely on given maps. 
+One commonly used map representations is occupancy 
 grid map \cite{elfes2013occupancy}, which divides the space
-into cells (2D or 3D) storing the probabilistic estimate of the 
+into cells (2D or 3D) that store the probabilistic estimate of the 
 states (occupied or not).
-Some data structure can be used to efficiently 
+Efficient data structures can be used to 
 represent the space. 
 The K-Dimensional Tree (K-D Tree) is an efficient data
 structure that organizes multi-dimensional point data 
 \cite{bentley1975multidimensional}
-which enables fast search of nearest neighbors.
-Incremental K-D Tree (ikd-tree) \cite{cai2021ikd} 
+enabling fast search of nearest neighbors.
+The Incremental K-D Tree (ikd-tree) \cite{cai2021ikd} 
 incrementally updates the K-D tree with only new points.
 Octomap \cite{wurm2010octomap} based on octrees using 
 probabilistic occupancy estimation proposes a compact 
 data structure for map representation.
 Another approach for volumetric representation is based on 
-signed distance fields (SDFs) introduced in the computer
-graphics literature \cite{curless1996volumetric}.
+signed distance fields (SDFs) \cite{curless1996volumetric}
+as introduced in the computer graphics literature.
 In recent robotic applications, \cite{lin2018autonomous} uses
 truncated signed distance fields (TSDFs)
 \footnote{The TSDF of a voxel is defined as the nearest 
 distance to the surrounding surface in a truncation distance. 
 If the voxel is between the robot and the surface, 
 the value is positive, negative otherwise. }
-to reconstruct the surfaces around the MAV. 
+to reconstruct surfaces around the MAV. 
 \cite{oleynikova2017voxblox} and later \cite{han2019fiesta}
 use Euclidean signed distance fields (ESDFs) to incrementally
 update the voxel map with distance and gradient information, 
@@ -275,108 +277,107 @@ which is convenient for gradient-based trajectory optimization.
 In general, path-planning algorithms for robot navigation 
 can be divided into two major categories: 
 global and local methods.
-\footnote{The reader should note that there is no strict 
-line between global and local planning methods, since
-it can also be argued that with high-frequency global
-re-planning, local path planning can be avoided.}  
+\footnote{The distinction between global and local
+planning methods is not strict, as high-frequency global 
+re-planning can eliminate the need for local path planning.}  
 Global methods focus on finding collision-free paths from 
-the current robot position to a global goal position mostly 
-in static scenes, while local methods tend to reactively 
+the current robot position to a global goal position in mostly 
+static scenes, while local methods tend to reactively 
 avoid both static and dynamic obstacles. 
-In order to generate smooth trajectories for robots to 
-follow, based on the discrete planned waypoints, the 
-trajectory optimization module is usually added in the 
-whole pipeline. 
-Usually in the literature, the path-finding module 
+To generate smooth trajectories for robots to 
+follow based on discrete planned waypoints, the 
+trajectory optimization module is usually added to 
+the pipeline. 
+In the literature, the path-finding module 
 is called the frontend and the 
 trajectory-optimization module is called the backend. 
 A typical traditional planning pipeline can be 
 found in Fig.~\ref{fig:concept}.
 
-\subsubsection{Path finding (frontend)}
+\subsubsection{Path Finding (Frontend)}
 
-In the path-finding stage of the global planning, 
-the methods can be categorized 
-from three major directions: \TB{search-based}, 
-\TB{sample-based}, and \TB{kinodynamic} methods. 
+In the path-finding stage of global planning, 
+methods can be categorized 
+into three major directions: {search-based}, 
+{sample-based}, and {kinodynamic} methods. 
 
 
 % \input{../algorithms/a_star.tex}
-\TB{Search-based} algorithms such as depth-first 
+{Search-based} algorithms such as depth-first 
 search (DFS) \cite{cormen2022introduction}, 
 breadth-first search (BFS) \cite{cormen2022introduction}, 
 Dijkstra \cite{wang2011application}, and 
 A* \cite{hart1968formal}, use graph-search methods 
-possibly with certain pre-defined heuristics to find 
+with certain pre-defined heuristics to find 
 geometrically feasible paths on given grid maps. 
-A key assumption for these methods to perform path-finding 
-is the map is given, which can be difficult to be obtained 
+These methods assume that 
+is the map is given, which can be challenging to obtain
 in certain situations. 
-Though these search-based methods can perform well, they 
-can have longer search time when the space scales.
+Although these search-based methods can perform well, they 
+can have longer search times when the space scales.
 % Alg.~\ref{alg:a_star} shows the A* path-planning algorithm which returns the shortest path from the source node to the target node. 
-\TB{Sample-based} methods such as rapidly exploring random 
+{Sample-based} methods such as rapidly exploring random 
 tree (RRT), probabilistic roadmap (PRM), and their 
-variants (e.g., RRT* and PRM*) use sampling in C-Space. 
-to crate collision-free paths \cite{lavalle2001rapidly,
+variants (e.g., RRT* and PRM*) use sampling in C-Space 
+to create collision-free paths \cite{lavalle2001rapidly,
 karaman2011sampling,kavraki1996probabilistic}. 
 % The general form of RRT algorithm can be found in 
 % Alg.~\ref{alg:rrt}.
 % \input{../algorithms/rrt.tex}
 However, the tree nodes in these methods need to cover the 
-whole C-Space which may suffer from heavy computational 
+whole C-Space which may result in heavy computational 
 loads especially when the space is large.  
 
 Both search- and sample-based methods can generate 
-geometrically collision-free paths but possibly jerky
+geometrically collision-free paths but they may be jerky
 \footnote{Jerk $\B{j}$ is the third time-derivative 
 of the position $\B{p}$} or 
-violating the underlying robots' dynamics.
+violate the underlying robots' dynamics.
 For example, most ground vehicles are not 
 holonomic, i.e., they cannot move freely in all directions 
-in 2D space, where their motions are governed by their 
-mechanical and motion constraints (e.g., velocities and 
-accelerations).
-In order to obey both the kinematic and dynamic 
-constraints for specific
-robot platforms and reduce the stress of the backend 
-optimization part, \TB{kinodynamic} methods are introduced
+in 2D space. Instead, their motions are governed by  
+mechanical and motion constraints, such as velocities and 
+accelerations.
+To account for both the kinematic and dynamic 
+constraints of specific
+robot platforms and reduce the stress on the backend 
+optimization part, {kinodynamic} methods are introduced
 in the literature. 
 Donald \etal \cite{donald1993kinodynamic} first proposed 
-the term \TB{kinodynamic} motion planning in the literature.
-The authors proposed the first provably good approximation 
-algorithm about the motion planning for a point-mass model 
+the term {kinodynamic} motion planning.
+The authors presented the first provably good approximation 
+algorithm for motion planning
 in 2D and 3D environments with polyhedral obstacles.
-State-lattice method \cite{pivtoraiko2011kinodynamic} is also 
+The state-lattice method \cite{pivtoraiko2011kinodynamic} is also 
 used for kinodynamic motion 
 planning, where the boundary value problem (BVP) needs to be 
-solved to get the corresponding control inputs 
+solved to obtain the corresponding control inputs 
 for the sampled states. 
-In \cite{zhou2019robust}, the authors propose a method 
-sampling in the control space to generate possible motion 
-primitives and then 
-based on these motions search and select kinodynamic 
-feasible paths. 
-Webb and Berg \cite{webb2013kinodynamic} propose the method
-kinodynamic RRT* generalizing the
+In \cite{zhou2019robust}, the authors propose a method that
+samples in the control space to generate possible motion 
+primitives, and then 
+search and select kinodynamically
+feasible paths based on these motions. 
+Webb and Berg \cite{webb2013kinodynamic} propose the
+kinodynamic RRT* method, which generalizes the
 earlier work on RRT* \cite{karaman2011sampling} for kinodynamic 
-systems, as it guarantees asymptotic optimality for 
+systems. This method guarantees asymptotic optimality for 
 any system with controllable linear
-dynamics, in state spaces of any dimension.
+dynamics in state spaces of any dimension.
 \cite{dolgov2008practical,dolgov2009autonomous,dolgov2010path}
-propose the algorithm hybrid A* (or hybrid-state A*) extending 
-original A* algorithm for kinodynamic graph searching.
+propose the hybrid A* (or hybrid-state A*) algorithm, which 
+extends the original A* algorithm for kinodynamic graph searching.
 
-Other less common method such as model predictive 
+Another less common method such as model predictive 
 control (MPC) added with obstacle constraints or with 
 additional environment-related 
 terms \cite{park2009obstacle,ji2016path}  can also be 
-used to generate collision-free paths, which is based on 
+used to generate collision-free paths. This method is based on 
 quadratic-programming (QP) optimization. 
-However, MPC-related methods need to tradeoff among the 
-length of the time horizon, the computational loads, and 
-optimality. Short time horizon often leads the problem to 
-sub-optimal solutions.
+However, MPC-related methods need to balance the 
+length of the time horizon, computational loads, and 
+optimality. A short time horizon often leads to 
+sub-optimal solutions for the problem.
 
 
 
@@ -384,22 +385,22 @@ sub-optimal solutions.
 \subsubsection{Trajectory generation and optimization (backend)}
 Most path-finding algorithms only generate geometric 
 feasible paths, without any time information. 
-The goal for trajectory generation and optimization is to 
+The goal of trajectory generation and optimization is to 
 provide both spatial and temporal profiles based on the 
 found paths \cite{quan2020survey}. 
-In essential, the trajectory is a geometric path parametrized 
+Essentially, the trajectory is a geometric path parametrized 
 in time, with guaranteed kinodynamic feasibility and smoothness.
 Usually, it is optimized with goals such as minimizing the 
 total ``energy'' spent along the path while satisfying the 
 kinodynamic constraints of the robots.
 Mellinger and Kumar \cite{mellinger2011minimum} propose 
 a minimum snap trajectory generation method based on the 
-differential flat property of the quadrotor or multirotor 
+differential flat property of quadrotor or multirotor 
 systems. 
 This method uses quadratic-programming (QP) optimization with 
 hard constraints for flight corridors to generate optimal 
 trajectories. 
-In the literature, one of the prevalent methods is 
+Among the prevalent methods in the literature are 
 interpolating curves \cite{dong2023review}.
 Zhou \etal \cite{zhou2019robust} propose a trajectory 
 optimization method based on the convex hull property of 
@@ -422,15 +423,15 @@ this problem.
 An early local obstacle-avoidance method is artificial 
 potential field (APF) \cite{warren1989global}.
 APF formulates the potentials on a given path as the 
-inside and outside ones, and pushes the path from 
-high-potential to low-potential region by finding the 
+inside and outside ones, and pushes the path from the
+high-potential to the low-potential region by finding the 
 lowest potential value. 
-If the waypoints on the path across the 
-obstacle (in the obstacle), the potential is formulated as 
+If the waypoints on the path cross the 
+obstacle (inside the obstacle), the potential is formulated as 
 \begin{equation}
 \label{eq:APF_in}
 U_{\text{in}} = 
-U_{\text{max}}(1 - \frac{R_{\text{in}}}{R_{\text{max}}}) + 
+U_{\text{max}}\left(1 - \frac{R_{\text{in}}}{R_{\text{max}}}\right) + 
 U_{\text{offset}}
 \end{equation}
 where $U_{\text{max}}$ is the max potential, 
@@ -442,20 +443,20 @@ The outside potential is formulated as
 \begin{equation}
 \label{eq:APF_out}
 U_{\text{out}} = 
-\frac{1}{2}U_{\text{offset}}(1+ \frac{1}{1+R_\text{out}})
+\frac{1}{2}U_{\text{offset}}\left(1+ \frac{1}{1+R_\text{out}}\right)
 \end{equation}
 where $R_{\text{out}}$ is the distance outside the obstacle.
 APF can be used for quadrotor path-planning \cite{chen2016uav}.
-However, when multiple obstacles presented, APF can suffer 
+However, when multiple obstacles are present, APF can suffer 
 from the problem of local minimum \cite{koren1991potential}.
-Dynamic window approach (DWA) \cite{seder2007dynamic} can 
+The dynamic window approach (DWA) \cite{seder2007dynamic} can 
 be used for dynamic obstacle avoidance, where DWA considers
 the kinodynamic feasibility of the robot and samples in the 
 velocity space to generate motion primitives for collision 
 avoidance. 
 The idea of velocity obstacle (VO) is proposed and generalized
 by Van Den Berg \cite{van2011reciprocal,van2011reciprocal2,bareiss2013reciprocal}.
-Reciprocal VO-based obstacle avoidance methods can be used for
+Reciprocal VO-based obstacle avoidance methods can be used
 for motion planning for robots.  
 However, the smoothness of the generated paths cannot be 
 guaranteed. 
@@ -465,7 +466,7 @@ is another approach to achieve obstacle avoidance for local
 motion planning, which directly changes the first-order 
 linear system of the robot (point-mass model) to guide the 
 robot away from the obstacle by adding a linear transformation
-(obtained from the environments) to the initial velocity of 
+(obtained from the environment) to the initial velocity of 
 the robot.
 However, the algorithms are limited with star-shaped obstacles, 
 and the performance of DSM on agile robots such as quadrotors
@@ -476,7 +477,7 @@ The control module is usually responsible for trajectory
 tracking (TT) tasks for planning and control.
 Despite the low-level controllers of the actuators of the 
 robots, which track the setpoints of torques, angular 
-velocities, or accelerations, the controllers used in TT
+velocities, or accelerations, the controllers used in the TT
 phase focus on designing controllers based on system
 equations so that robots can track a given reference 
 trajectory asymptotically. 
@@ -497,7 +498,7 @@ In \cite{zhang2023coni}, the authors propose cooperative
 non-inertial frame based model predictive control (CoNi-MPC), 
 which directly formulates the quadrotor model in a target's 
 body non-inertial frame and controls the quadrotor tracking 
-trajectories pre-defined in the target's frame.
+trajectories predefined in the target's frame.
 
 \subsection{DRL-based Planning and Control}
 Deep Reinforcement Learning (DRL), which combines deep learning 
@@ -535,7 +536,7 @@ high-speed agile navigation for quadrotors.
 \section{Problem Formulation}
 
 \subsection{Quadrotor Dynamics}
-The quadrotor used in the task is modeled as a 6 degree-of-
+The quadrotor used in the task is modeled as a six degree-of-
 freedom rigid body with mass $m$ and diagonal moment of 
 inertial matrix $\B{J}$.
 The dynamics of the system can be formulates as: 
@@ -567,10 +568,10 @@ mass-normalized thrust in the body frame $B$.
 The conversion of single rotor thrusts 
 $\left[f_1, f_2, f_3, f_4\right]$ to 
 mass-normalized thrust $c$ 
-and body torques $\B{eta}$ is formulated as
+and body torques ${}^B\B{\eta}$ is formulated as
 \[
   c = \frac{1}{m}\sum_{i=1}^4 f_i,\;
-  \B{\eta} = 
+  {}^B\B{\eta} = 
   \begin{bmatrix}
     l/\sqrt{2}(f_1 - f_2 - f_3 + f_4) \\
     l/\sqrt{2}(-f_1 - f_2 + f_3 + f_4) \\
@@ -580,7 +581,7 @@ and body torques $\B{eta}$ is formulated as
 where $l$ is the arm length and $\kappa$ is the torque 
 constant.
 For each motor force $f_i$, it is modeled as 
-$f_i = \alpha \omega_i^2$ where $\alpha$ is the motor 
+$f_i = \alpha \omega_i^2$, where $\alpha$ is the motor 
 force constant and $\omega_i$ is the motor's rotation speed
 (rad/s).
 The full state of the quadrotor is defined as 
@@ -590,24 +591,58 @@ $\B{u} = \left[\omega_1, \omega_2, \omega_3,
 \omega_4\right]^\top$.
 
 \subsection{Task Formulation}
-The goal for the quadrotor team is to fly across as many as 
-static and dynamic gates from the start position 
-$\B{p}_\text{start}$ to the goal position 
-$\B{p}_\text{goal}$ in minimum time. 
-Assume we have $N$ number of quadrotors and $M$ gates. 
-The position of and orientation of each gate is denoted 
-as $\B{p}_i$ and $\B{q}_i$, respectively.
-This task requires that the team trades off between 
-exploration and exploitation to cross maximum number of 
-gates while flying to the goal position in minimum time.
 
-Our primary objective is to guide a quadrotor team 
-to traverse both static and dynamic gates, starting 
-from an initial position and culminating at a 
-pre-determined goal position. The overarching goal 
-is not just navigation, but to achieve this 
-traversal in the least possible time, thus 
-accentuating the efficiency of the process.
+The primary objective of our quadrotor team is to traverse a 
+complex environment, transitioning through as many static and 
+dynamic gates as possible, initiating from the start position 
+$ \B{p}_{\text{start}} $ and ending at the goal position 
+$ \B{p}_{\text{goal}} $, all within a minimal flight time. 
+Given that we are working with $ N $ quadrotors and $ M $ 
+gates, 
+each gate's position and orientation can be delineated as 
+$ \B{p}_i $
+and $ \B{q}_i $respectively. 
+This task underscores a delicate balance: 
+the quadrotor team must navigate between 
+exploration (to identify and target potential gates)
+and exploitation, 
+ensuring that they traverse the maximum number of gates while 
+rapidly progressing towards $ \B{p}_{\text{goal}} $.
+Mathematically, given $N$ quadrotors, $M$ gates 
+with poses $\left\{(\B{p}_1,\B{q}_i), \dots, 
+(\B{p}_M, \B{q}_M)\right\} 
+\subset \mathbb{R}^3\times\mathbb{S}^3$, we can 
+formulate the problem in a general optimization form:
+\begin{equation}
+  \label{eq:general_opt}
+  \begin{aligned}
+    \max \quad & G \\
+    \textrm{s.t.} \quad & \min \quad T \\
+    & \B{p}^{(i)}(0) = \B{p}_\text{start} \quad i = 1\dots N \\
+    & \B{p}^{(i)}(T) = \B{p}_\text{end} \quad i = 1\dots N \\
+    & G \le M \\
+    & T \ge 0
+  \end{aligned}
+\end{equation}
+where $G$ represents the number of gates traversed by the 
+quadrotor team, $T$ is the time taken for the team moving
+from the initial to the goal position, and $\B{p}^{(i)}$ 
+is the position of the $i^{\text{th}}$ quadrotor in the 
+team. 
+
+To address this complex navigation challenge, we employ a 
+DRL-based approach. 
+This method stands apart from traditional planning algorithms, 
+offering a blend of data-driven adaptability with strategic 
+control, tailor-made for dynamic environments.
+The DRL model would receive the environmental state, encompassing 
+the positions of static and dynamic gates, quadrotor's current 
+position, and other potential obstacles. 
+Based on this, the model would decide the next best action to move closer to the goal 
+while maximizing the number of gate traversals and minimizing the 
+total time.
+
+
 
 \bibliographystyle{IEEEtran}
 \bibliography{report}
