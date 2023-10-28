@@ -428,23 +428,21 @@ high-potential to the low-potential region by finding the
 lowest potential value. 
 If the waypoints on the path cross the 
 obstacle (inside the obstacle), the potential is formulated as 
-\begin{equation}
-\label{eq:APF_in}
+\[
 U_{\text{in}} = 
 U_{\text{max}}\left(1 - \frac{R_{\text{in}}}{R_{\text{max}}}\right) + 
 U_{\text{offset}}
-\end{equation}
+\]
 where $U_{\text{max}}$ is the max potential, 
 $R_{\text{in}}$ is the distance to the centroid of the 
 obstacle, $R_{\text{max}}$ is the max radius of the 
 obstacle, and $U_{\text{offset}}$ is the extra 
 potential penalty.
 The outside potential is formulated as 
-\begin{equation}
-\label{eq:APF_out}
+\[
 U_{\text{out}} = 
 \frac{1}{2}U_{\text{offset}}\left(1+ \frac{1}{1+R_\text{out}}\right)
-\end{equation}
+\]
 where $R_{\text{out}}$ is the distance outside the obstacle.
 APF can be used for quadrotor path-planning \cite{chen2016uav}.
 However, when multiple obstacles are present, APF can suffer 
@@ -540,7 +538,8 @@ The quadrotor used in the task is modeled as a six degree-of-
 freedom rigid body with mass $m$ and diagonal moment of 
 inertial matrix $\B{J}$.
 The dynamics of the system can be formulates as: 
-\[
+\begin{equation}
+\label{eq:quadrotor_system}
 \begin{aligned}
   \dot{\B{p}} &= \B{v}
   \\  
@@ -551,7 +550,7 @@ The dynamics of the system can be formulates as:
   {}^B\dot{\B{\omega}} &= 
   \B{J}^{-1}({}^B\B{\eta} - {}^B\B{\omega} \times \B{J}{}^B\B{\omega})
 \end{aligned}
-\]
+\end{equation}
 where $\B{p}$ and $\B{v}$ are the position and velocity 
 vectors in the world frame $W$. 
 We use a unit quaternion 
