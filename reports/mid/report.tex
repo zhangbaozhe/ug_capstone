@@ -271,8 +271,16 @@ which is convenient for gradient-based trajectory optimization.
 
 \subsection{Traditional Planning and Control}
 
-
-\input{../figures/planning_concept.tex}
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=.5\textwidth]
+  {../figures/frontback.png}
+  \label{fig:concept}
+  \caption{Hierarchical planning pipeline: The path-finding module 
+finds a geometric collision-free path, and then trajectory
+optimization module generates a continuous state-admissable and kinodynamically
+feasible trajectory.}
+\end{figure}
 In general, path-planning algorithms for robot navigation 
 can be divided into two major categories: 
 global and local methods.
@@ -282,7 +290,7 @@ re-planning can eliminate the need for local path planning.}
 Global methods focus on finding collision-free paths from 
 the current robot position to a global goal position in mostly 
 static scenes, while local methods tend to reactively 
-avoid both static and dynamic obstacles. 
+avoid both static and dynamic obstacles and they are usually coupled with control modules. 
 To generate smooth trajectories for robots to 
 follow based on discrete planned waypoints, the 
 trajectory optimization module is usually added to 
@@ -290,7 +298,7 @@ the pipeline.
 In the literature, the path-finding module 
 is called the frontend and the 
 trajectory-optimization module is called the backend. 
-A typical traditional planning pipeline can be 
+A typical hierarchical planning pipeline can be 
 found in Fig.~\ref{fig:concept}.
 
 \subsubsection{Path Finding (Frontend)}
