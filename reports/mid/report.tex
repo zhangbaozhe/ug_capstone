@@ -236,8 +236,7 @@ $\tau(1) = q_{\text{goal}} \in \robotConfig_{\text{free}}$
 are the start and goal transformations, respectively.
 
 Although mapping techniques are typically associated 
-with the problem of
-simultaneous localization and mapping (SLAM), mapping with
+with the problem of SLAM, mapping with
 known poses of the robot is also important. 
 Many motion planning algorithms rely on given maps. 
 One commonly used map representations is occupancy 
@@ -382,7 +381,7 @@ sub-optimal solutions for the problem.
 
 
 
-\subsubsection{Trajectory generation and optimization (backend)}
+\subsubsection{Trajectory Generation and Optimization (Backend)}
 Most path-finding algorithms only generate geometric 
 feasible paths, without any time information. 
 The goal of trajectory generation and optimization is to 
@@ -397,7 +396,7 @@ Mellinger and Kumar \cite{mellinger2011minimum} propose
 a minimum snap trajectory generation method based on the 
 differential flat property of quadrotor or multirotor 
 systems. 
-This method uses quadratic-programming (QP) optimization with 
+This method uses QP optimization with 
 hard constraints for flight corridors to generate optimal 
 trajectories. 
 Among the prevalent methods in the literature are 
@@ -415,7 +414,7 @@ CHOMP \cite{ratliff2009chomp} and
 EGO-Planner \cite{zhou2020ego} are also popular methods 
 for trajectory optimization.
 
-\subsubsection{Local methods}
+\subsubsection{Local Methods}
 Most global methods perform well in static environments, 
 but poorly in dynamic environments. 
 Local path-planning methods can be employed to handle 
@@ -482,7 +481,7 @@ trajectory asymptotically.
 \cite{majd2019stable} proposes using the input-output 
 linearization technique to optimize the tracking error for
 car-like robot trajectory tracking.
-Model predictive control (MPC) or receding horizon control (RHC)
+MPC or receding horizon control (RHC)
 is also a popular method to perform TT via optimization.
 \cite{kunhe2005mobile} used non-linear MPC to control the 
 wheeled robots for TT.
@@ -499,7 +498,7 @@ body non-inertial frame and controls the quadrotor tracking
 trajectories predefined in the target's frame.
 
 \subsection{DRL-based Planning and Control}
-Deep Reinforcement Learning (DRL), which combines deep learning 
+DRL, which combines deep learning 
 and reinforcement learning (RL), 
 has become increasingly popular in the field of motion planning 
 and control. 
@@ -516,7 +515,7 @@ This algorithm facilitates learning policies in continuous action
 spaces, a necessary feature for most real-world control tasks 
 \cite{lillicrap2015continuous}.
 
-In the context of aerial vehicles, Zhang \etal integrated Model Predictive Control (MPC) with DRL. 
+In the context of aerial vehicles, Zhang \etal integrated MPC with DRL. 
 They demonstrated the combination through guided policy search 
 with an MPC controller in simulation. 
 Their work employed a policy that maps raw sensor data to rotor 
