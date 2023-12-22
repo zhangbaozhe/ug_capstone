@@ -75,7 +75,7 @@ Dr.~Yuan Gao.}
 
 
 \begin{abstract}
-  Micro aerial vehicles (MAVs) or unmanned aerial vehicles (UAVs), popularly referred to as drones, have seen an upsurge in applications across diverse industries. Their rising prominence is also due to the need for multi-drone operations in dynamic environments, posing significant challenges in navigation and coordination. While traditional motion planning and control algorithms have achieved notable milestones, they are often constrained by system complexity, modeling limitations, and lack of generalizability. This report highlights the potential of Deep Reinforcement Learning (DRL) as an alternative approach. With its capabilities for end-to-end training, scalability, data-driven modeling, and task generalization, DRL presents a promising avenue to overcome traditional limitations. Specifically, we aim to harness DRL's potential to enable a quadrotor team to navigate through a combination of static and dynamic gates, emphasizing efficiency and score optimization. The exploration encapsulates DRL's promise in navigating advanced robotic challenges in contemporary dynamic environments.
+  Micro aerial vehicles (MAVs) or unmanned aerial vehicles (UAVs), popularly referred to as drones, have seen an upsurge in applications across diverse industries. Their rising prominence is also due to the need for multi-drone operations in dynamic environments, posing significant challenges in navigation and coordination. While traditional motion planning and control algorithms have achieved notable milestones, they are often constrained by system complexity, modeling limitations, and lack of generalizability. This report highlights the potential of Deep Reinforcement Learning (DRL) as an alternative approach. With its capabilities for end-to-end training, scalability, data-driven modeling, and task generalization, DRL presents a promising avenue to overcome traditional limitations. Specifically, we aim to utilize DRL's potential to enable a quadrotor team to navigate through a combination of static and dynamic gates, emphasizing efficiency and score optimization. The exploration encapsulates DRL's promise in navigating advanced robotic challenges in dynamic environments.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -87,7 +87,9 @@ Dr.~Yuan Gao.}
 \IEEEPARstart{R}{ecently}, micro aerial vehicles (MAVs) or 
 unmanned Aerial Vehicles (UAVs), commonly known as drones, 
 have emerged as a powerful tool in various industries, 
-ranging from agriculture and real estate to filmography and delivery 
+ranging from 
+smart agriculture and autonomous inspection
+to cinematography and delivery 
 services. 
 Their versatility and cost-effectiveness have led to a 
 surge in applications that require multiple drones to operate 
@@ -150,7 +152,8 @@ amounts of data and adapt to changes in real-time
 DRL-based motion planning and control bring insights to 
 overcome the challenges faced by traditional methods: 
 \begin{itemize}
-  \item \TB{Unified framework}. DRL allows for unified end-to-end 
+  \item \TB{Unified framework}. Within the framework 
+  of Markov Decision Process (MDP), DRL allows for unified end-to-end 
   training and inference where planning and control can be 
   learned 
   jointly, potentially leading to more cohesive and optimal 
@@ -508,16 +511,13 @@ trajectories predefined in the target's frame.
 
 \subsection{DRL-based Planning and Control}
 %% TODO: enrich this section with more papers
-DRL, which combines deep learning 
-and reinforcement learning (RL), 
+DRL, which combines deep learning (DL) and RL, 
 has become increasingly popular in the field of motion planning 
 and control. 
 Its adaptability, ability to learn from raw data, and scalability 
 have made it an attractive choice for researchers.
 For instance, Mnih \etal introduced the deep Q network (DQN), 
 a DRL algorithm capable of achieving human-level performance in various video games \cite{mnih2015human}. 
-This breakthrough has established a precedent for applying 
-DQN in motion planning and control for robots. 
 Additionally, Lillicrap \etal went on to expand the 
 capabilities of DQN by proposing the deep deterministic policy 
 gradient (DDPG) algorithm. 
@@ -525,14 +525,15 @@ This algorithm facilitates learning policies in continuous action
 spaces, a necessary feature for most real-world control tasks 
 \cite{lillicrap2015continuous}.
 
-In the context of aerial vehicles, Zhang \etal integrated MPC with DRL. 
+In \cite{hwangbo2017control}, the authors use actor-critic 
+methos training a policy network to control the quadrotor. 
+Zhang \etal integrated MPC with DRL using policy search. 
 They demonstrated the combination through guided policy search 
 with an MPC controller in simulation. 
 Their work employed a policy that maps raw sensor data to rotor 
 velocities to achieve obstacle avoidance \cite{zhang2016learning}. 
 Moreover, Kahn \etal proposed a DRL methodology that excelled in 
 navigation tasks using raw monocular camera images \cite{kahn2018self}.
-
 The application of DRL in drone racing and agile flight dynamics 
 has received significant attention in recent studies \cite{loquercio2019deep, song2021autonomous, song2022policy, penicka2022learning, song2023reaching}. 
 These studies highlight the effectiveness of DRL in motion 
@@ -650,8 +651,53 @@ team.
 % while maximizing the number of gate traversals and minimizing the 
 % total time.
 
-\subsection{Deep Reinforcement Learning Method}
-TODO
+Despite the trivial mathematical formulation, 
+we formulate the problem in the reinforcement learning 
+framework. 
+We model the task using an finite-horizon MDP 
+defined by a tuple $\left(
+  \mathcal{S}, 
+  \mathcal{A}, 
+  \mathcal{P}, 
+  r, \rho_0, \gamma
+\right)$ \cite{sutton2018reinforcement}.
+The state of the RL agent is 
+$\B{s}_t \in \mathcal{S}$ drawn from 
+an initial distribution $\rho_0(\B{s})$.
+At each time step $t$, an action $\B{a}_t \in \mathcal{A}$ 
+sampled from a stochastic policy $\pi(\B{a}_t | \B{s}_t)$, 
+is executed and the agent move to the next state $\B{s}_{t+1}$, 
+with the transition probability $\mathcal{P}^{\B{a}_t}_{\B{s}_t\B{s}_{t+1}} = Pr(\B{s}_{t+1} | \B{s}_t, \B{a}_t)$, receiving 
+an immediate reward $r_t \in \mathbb{R}$.
+
+In the DRL, the policy is usually parametrized with parameters $\btheta$ to formulate a neural network policy $\pi_{\btheta}$.
+The goal of DRL is to find an optimal policy $\pi^*$ that 
+maximizes the expected discounted reward over a time horizon $T$.
+The discrete time-formulation of the objective is 
+\begin{equation}
+  \label{eq:rl_objective}
+  \pi^*_{\btheta} = \argmax_{\pi} \mathbb{E}_{\btau \sim \pi}
+  \left[
+    \sum_{t=0}^T \gamma^t r_t
+  \right]
+\end{equation}
+where $\gamma \in [0,1)$ is the discount factor that 
+trades off long-term against short-term rewards.
+The optimal trajectory $\btau^*$ is obtained by rolling 
+out the trained policy.
+
+\subsubsection{Hover Task}
+To demonstrate the feasibility of DRL, we first show 
+a simple hover task for a single drone.
+The state in this task is defined as 
+$\B{s} = \left[ \B{p}, \B{q}, \B{v} \right]^\top$ 
+representing the position, orientation, and linear velocity
+of the drone.
+The action is defined as 
+$\B{a} = \left[ \omega_1, \omega_2, \omega_3, \omega_4 \right]^\top$
+representing the motors' rotation speed.
+
+
 
 \section{Experiments}
 
