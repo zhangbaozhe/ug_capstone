@@ -67,7 +67,7 @@ Dr.~Yuan Gao.}
 % The paper headers
 \markboth{ERG4901: Capstone Project -- Fianl Report}%
 %{Shell \MakeLowercase{\textit{et al.}}: A Sample Article Using IEEEtran.cls for IEEE Journals}
-{Zhang: Multi-drone Motion Planning \& Control}
+{Zhang: Multi-drone Motion Planning \& Control in Dynamic Environments based on Deep Reinforcement Learning}
 
 % \IEEEpubid{\copyright~2023 Baozhe Zhang}
 % Remember, if you use this you must call \IEEEpubidadjcol in the second
@@ -555,10 +555,10 @@ The dynamics of the system can be formulates as:
   \\  
   \dot{\B{v}} &= {}^W\B{q}_B \odot {}^B\B{c} + \B{g}
   \\
-  {}^W\dot{\B{q}}_B &= \frac{1}{2} {}^W\B{q}_B \odot {}^B\B{\omega}
+  {}^W\dot{\B{q}}_B &= \frac{1}{2} {}^W\B{q}_B \odot {}^B{\Bomega}
   \\
-  {}^B\dot{\B{\omega}} &= 
-  \B{J}^{-1}({}^B\B{\eta} - {}^B\B{\omega} \times \B{J}{}^B\B{\omega})
+  {}^B\dot{{\Bomega}} &= 
+  \B{J}^{-1}({}^B\B{\Beta} - {}^B{\Bomega} \times \B{J}{}^B{\Bomega})
 \end{aligned}
 \end{equation}
 where $\B{p}$ and $\B{v}$ are the position and velocity 
@@ -568,7 +568,7 @@ ${}^W\B{q}_B = \left[q_w, q_x, q_y, q_z\right]^\top$
 to represent the rotation transformation from body frame 
 $B$ to world frame $W$
 and 
-${}^B\omega = \left[\omega_x, \omega_y, \omega_z\right]^\top$ to denote the angular velocity (body rates) in the 
+${}^B\Bomega = \left[\omega_x, \omega_y, \omega_z\right]^\top$ to denote the angular velocity (body rates) in the 
 body frame $B$.
 The gravity vector $\B{g}$ is $\left[0,0,-g_z\right]$ where
 $g_z$ is $9.81\;\text{m}\;\text{s}^{-2}$.
@@ -580,7 +580,7 @@ mass-normalized thrust $c$
 and body torques ${}^B\B{\eta}$ is formulated as
 \[
   c = \frac{1}{m}\sum_{i=1}^4 f_i,\;
-  {}^B\B{\eta} = 
+  {}^B{\Beta} = 
   \begin{bmatrix}
     l/\sqrt{2}(f_1 - f_2 - f_3 + f_4) \\
     l/\sqrt{2}(-f_1 - f_2 + f_3 + f_4) \\
@@ -598,11 +598,13 @@ $\B{x} = \left[\B{p}, \B{v}, {}^W{\B{q}}_B,
 {}^B\B{\omega}\right]^\top$ and the input as 
 $\B{u} = \left[\omega_1, \omega_2, \omega_3, 
 \omega_4\right]^\top$.
+For convenience, we will use $\B{q}$ and $\Bomega$ to represent
+the orientation and angular velocity of the quadrotor.
 
 \subsection{General Task Formulation}
 
 The primary objective of our quadrotor team is to traverse a 
-complex environment, transitioning through as many static and 
+complex environment, passing through as many static and 
 dynamic gates as possible, initiating from the start position 
 $ \B{p}_{\text{start}} $ and ending at the goal position 
 $ \B{p}_{\text{goal}} $, all within a minimal flight time. 
@@ -621,7 +623,7 @@ Mathematically, given $N$ quadrotors, $M$ gates
 with poses $\left\{(\B{p}_1,\B{q}_i), \dots, 
 (\B{p}_M, \B{q}_M)\right\} 
 \subset \mathbb{R}^3\times\mathbb{S}^3$, we can 
-formulate the problem in a general optimization form:
+formulate the problem in a trivial optimization form:
 \begin{equation}
   \label{eq:general_opt}
   \begin{aligned}
@@ -670,38 +672,73 @@ is executed and the agent move to the next state $\B{s}_{t+1}$,
 with the transition probability $\mathcal{P}^{\B{a}_t}_{\B{s}_t\B{s}_{t+1}} = Pr(\B{s}_{t+1} | \B{s}_t, \B{a}_t)$, receiving 
 an immediate reward $r_t \in \mathbb{R}$.
 
-In the DRL, the policy is usually parametrized with parameters $\btheta$ to formulate a neural network policy $\pi_{\btheta}$.
+In the DRL, the policy is usually parametrized with parameters $\Btheta$ to formulate a neural network policy $\pi_{\Btheta}$.
 The goal of DRL is to find an optimal policy $\pi^*$ that 
 maximizes the expected discounted reward over a time horizon $T$.
 The discrete time-formulation of the objective is 
 \begin{equation}
   \label{eq:rl_objective}
-  \pi^*_{\btheta} = \argmax_{\pi} \mathbb{E}_{\btau \sim \pi}
+  \pi^*_{\Btheta} = \argmax_{\pi} \mathbb{E}_{\Btau \sim \pi}
   \left[
     \sum_{t=0}^T \gamma^t r_t
   \right]
 \end{equation}
 where $\gamma \in [0,1)$ is the discount factor that 
 trades off long-term against short-term rewards.
-The optimal trajectory $\btau^*$ is obtained by rolling 
+The optimal trajectory $\Btau^*$ is obtained by rolling 
 out the trained policy.
 
 \subsubsection{Hover Task}
 To demonstrate the feasibility of DRL, we first show 
 a simple hover task for a single drone.
 The state in this task is defined as 
-$\B{s} = \left[ \B{p}, \B{q}, \B{v} \right]^\top$ 
-representing the position, orientation, and linear velocity
-of the drone.
+$\B{s} = \left[ \B{p}, \B{q}, \B{v}, \Bomega \right]^\top$ 
+representing the position, orientation, linear velocity, 
+and angular velocity of the drone.
 The action is defined as 
 $\B{a} = \left[ \omega_1, \omega_2, \omega_3, \omega_4 \right]^\top$
 representing the motors' rotation speed.
-
-
+The objective of this task is to let the quadrotor hover 
+at a certain height, e.g., $(0.0, 0.0, 1.0)$, and the 
+quadrotor may be spawned in random positions.
+Therefore, the reward function for this task is defined as 
+\begin{equation}
+  \label{eq:hover_reward}
+  \begin{aligned}
+    &r_{\text{pos}} = \frac{1}{1 + \Norm{\B{p}}_2^2}, 
+    r_{\text{ori}} = \frac{1}{1 + \phi^2}, 
+    r_{\text{spin}} = \frac{1}{1 + \Norm{\Bomega}_2^2} \\
+    &r_t = r_{\text{pos}} + r_{\text{ori}} + r_{\text{spin}}
+  \end{aligned}
+\end{equation}
+where $\phi$ is the angle between ${}^B\B{z}$ and ${}^W\B{z}$ (
+z axis between the body frame and the world frame).
+In the training process, we use Proximal Policy Optimization
+(PPO) \cite{schulman2017proximal}, a first-order policy gradient method that is particularly popular for its good benchmark performances and simplicity in implementation. 
 
 \section{Experiments}
 
+In the experiment part, we use Isaac Gym \cite{makoviychuk2021isaac} developed by NVIDIA to train the tasks.
 
+\section{Future Work and Conclusion}
+This project is far from complete. 
+Considering the work of this project, there will be much to be 
+done in the future.
+In the future, we will continue to work on this project in the 
+following areas:
+\begin{itemize}
+  \item Achieving single quadrotor traversing through multiple gates
+  \item Exploring multi-agent RL to control the quadrotor team collaboratively passing through the gates
+\end{itemize}
+
+To conclude, in this report, we summarized the difference 
+of the motion planning and control between traditional optimization-based and RL-based methods. 
+We present a brief literature review of these two methods for motion planning and control especially for drones.
+We also demonstrate the problem for the multi-drone motion planning and control to achieve a task for the quadrotor team passing through maximal number of gates while maintaining minimal traversal time.
+
+\section*{Acknowledgement}
+I deeply thank my advisors Prof.~Tin Lun Lam and Dr.~Yuan Gao for giving me this research opportunity.
+Without their support and mentoring, I would not start this project and continue to work on it.
 
 
 
